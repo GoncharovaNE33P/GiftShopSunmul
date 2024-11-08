@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.giftshopsunmulapp.View.Avtorization
+import com.example.giftshopsunmulapp.View.Registration
 import com.example.giftshopsunmulapp.ViewModels.AvtorizationVM
 import com.example.giftshopsunmulapp.ViewModels.MainViewModel
 
@@ -19,5 +20,8 @@ fun Navigation(viewModel: MainViewModel)
     {
         composable("Avtorization")
         { Avtorization(navController, AvtorizationVM())}
+
+        composable("Registration")
+        { Registration(navController, AvtorizationVM())}
     }
 }

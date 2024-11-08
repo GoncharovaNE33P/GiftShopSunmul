@@ -21,15 +21,17 @@ private val fontProvider = GoogleFont.Provider(
 private val NameFont1 = GoogleFont("Jersey 10")
 private val NameFont2 = GoogleFont("Montserrat Alternates")
 @OptIn(ExperimentalTextApi::class)
-private val fontFamily = FontFamily(
-    Font(googleFont = NameFont1, fontProvider = fontProvider),
+private val fontFamily1 = FontFamily(
+    Font(googleFont = NameFont1, fontProvider = fontProvider)
+)
+private val fontFamily2 = FontFamily(
     Font(googleFont = NameFont2, fontProvider = fontProvider)
 )
 
 // Set of Material typography styles to start with
 val Typography = Typography(
     bodyLarge = TextStyle(
-        fontFamily = FontFamily.Default,
+        fontFamily = fontFamily2,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
         lineHeight = 24.sp,
