@@ -6,7 +6,8 @@ plugins {
 
 android {
     namespace = "com.example.giftshopsunmulapp"
-    compileSdk = 35
+    compileSdk = 35 /*agp = "8.6.1"*/
+    //compileSdk = 34 /*agp = "8.5.1"*/
 
     defaultConfig {
         applicationId = "com.example.giftshopsunmulapp"
