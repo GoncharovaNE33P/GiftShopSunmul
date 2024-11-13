@@ -54,7 +54,7 @@ fun GiftShopSunmulAppTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+        typography = typography,
         content = content
     )
 }

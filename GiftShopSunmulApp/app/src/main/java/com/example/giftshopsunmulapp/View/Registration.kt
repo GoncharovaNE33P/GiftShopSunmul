@@ -322,7 +322,7 @@ fun Registration(navHost: NavHostController, viewModel: RegistrationVM = viewMod
                         coroutineScope.launch {
                             val result = viewModel.Auth(email.value, password.value)
                             if (result) {
-                                navHost.navigate("Registration")
+                                navHost.navigate("ProdPage")
                             } else {
                                 snackbarHostState.showSnackbar("Поля пусты или введены некорректные данные!")
                             }
