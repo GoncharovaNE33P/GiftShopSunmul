@@ -1,11 +1,13 @@
 package com.example.giftshopsunmulapp.View
 
+import android.view.RoundedCorner
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,7 +15,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -64,28 +70,45 @@ import com.example.giftshopsunmulapp.ui.theme.white
 import io.github.jan.supabase.realtime.Column
 import kotlinx.coroutines.launch
 import java.lang.reflect.Type
-@Preview
+//@Preview
 @Composable
-fun ProdPage(/*navHost: NavHostController, viewModel: ProdPageVM = viewModel()*/)
+fun ProdPage(navHost: NavHostController, viewModel: ProdPageVM = viewModel())
 {
-    Box(modifier = Modifier
+    Column(modifier = Modifier
         .fillMaxSize()
-        .background(color = white).padding(top = 90.dp)
+        .background(color = white)
     )
     {
-        Row(modifier = Modifier
-            .background(color = lightBlue)
-            .height(90.dp)
-            .width(350.dp).align(Alignment.TopCenter)
-            .clip(RoundedCornerShape(15.dp)),
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.Top
-        )
+        Column(modifier = Modifier
+            .background(color = white).padding(top = 50.dp, start = 15.dp)
+            .clip(RoundedCornerShape(15.dp)))
         {
-            Text(text = "tresh")
-            Text(text = "tresh")
-            Text(text = "tresh")
-            Text(text = "tresh")
+            LazyRow(
+                modifier = Modifier
+                    .background(color = lightBlue)
+                    .height(90.dp)
+                    .width(380.dp)
+                    .padding(top = 10.dp),
+                horizontalArrangement = Arrangement.spacedBy(15.dp),
+                contentPadding = PaddingValues(horizontal = 16.dp)
+            ) {
+                items(5)
+                {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally)
+                    {
+                        Box(
+                            modifier = Modifier
+                                .size(50.dp)
+                                .clip((RoundedCornerShape(5.dp)))
+                                .background(color = lightGreen)
+                        )
+                        Spacer(modifier = Modifier.height(3.dp))
+                        Text(text = "Категория", fontSize = 12.sp,
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontWeight = FontWeight.ExtraBold)
+                    }
+                }
+            }
         }
     }
 }

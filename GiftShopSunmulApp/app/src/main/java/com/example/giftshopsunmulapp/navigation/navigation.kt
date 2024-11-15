@@ -32,6 +32,6 @@ fun Navigation(viewModel: MainViewModel)
         { Registration(navController, RegistrationVM())}
 
         composable("ProdPage")
-        { ProdPage(/*navController, ProdPageVM()*/)}
+        { ProdPage(navController, ProdPageVM())}
     }
 }

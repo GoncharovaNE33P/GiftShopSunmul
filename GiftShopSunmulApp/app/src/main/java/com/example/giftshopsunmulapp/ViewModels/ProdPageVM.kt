@@ -10,38 +10,35 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.giftshopsunmulapp.domain.utlis.Constants
+import com.example.giftshopsunmulapp.model.categories
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.builtin.Email
+import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class ProdPageVM: ViewModel(){
 
-    suspend fun Auth(emailUser: String, passwordUser: String): Boolean
-    {
-        if (emailUser.isBlank() || passwordUser.isBlank()) {
-            return false
-        }
-        return try
-        {
-            val user = withContext(Dispatchers.IO) {
-                Constants.supabase.auth.signInWith(Email) {
-                    email = emailUser
-                    password = passwordUser
-                }
-            }
-            println(user.toString())
-            println(Constants.supabase.auth.currentUserOrNull()!!.id)
-            println("Успешно!")
-            true
-        }
-        catch (e: Exception)
-        {
-            println("Ошибка!")
-            println(e.message.toString())
-            false
-        }
+    val _listCategories = MutableStateFlow<List<categories>>(emptyList())
+    var listCategories: StateFlow<List<categories>> = _listCategories
 
+    private val _isLoadData = MutableStateFlow(false)
+    val isLoadData: StateFlow<Boolean> = _isLoadData
+
+    fun loadCategories()
+    {
+        viewModelScope.launch {
+            try {
+                val categorie = Constants.supabase.from("categories").select().decodeList<categories>()
+
+            }
+            catch(e: Exception)
+            {
+
+            }
+        }
     }
 }
