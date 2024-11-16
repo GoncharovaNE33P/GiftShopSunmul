@@ -61,10 +61,11 @@ dependencies {
     implementation("io.github.jan-tennert.supabase:realtime-kt:3.0.1")
     implementation("io.github.jan-tennert.supabase:storage-kt:3.0.1")
     implementation("io.coil-kt:coil-compose:2.7.0")
-    implementation("androidx.navigation:navigation-compose:2.8.3")
+    implementation("androidx.navigation:navigation-compose:2.8.4")
     implementation("androidx.core:core-splashscreen:1.2.0-alpha02")
     implementation("androidx.compose.ui:ui-text-google-fonts:1.7.5")
-    //implementation("androidx.compose.ui:ui-text-google-fonts:1.8.0-alpha05")
+    implementation("androidx.compose.material:material:1.7.5")
+    implementation("androidx.compose.material3:material3:1.3.1")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

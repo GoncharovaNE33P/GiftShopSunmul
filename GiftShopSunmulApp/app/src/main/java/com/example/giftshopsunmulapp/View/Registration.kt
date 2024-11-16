@@ -1,16 +1,20 @@
 package com.example.giftshopsunmulapp.View
 
+import android.annotation.SuppressLint
+import android.app.Activity
+import android.icu.util.Calendar
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -44,7 +48,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.giftshopsunmulapp.R
-import com.example.giftshopsunmulapp.ViewModels.AvtorizationVM
 import com.example.giftshopsunmulapp.ViewModels.RegistrationVM
 import com.example.giftshopsunmulapp.ui.theme.blue
 import com.example.giftshopsunmulapp.ui.theme.darkBlue
@@ -52,12 +55,23 @@ import com.example.giftshopsunmulapp.ui.theme.lightBlue
 import com.example.giftshopsunmulapp.ui.theme.lightGreen
 import com.example.giftshopsunmulapp.ui.theme.white
 import kotlinx.coroutines.launch
+import android.app.DatePickerDialog
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.runtime.DisposableEffect
+//noinspection UsingMaterialAndMaterial3Libraries
+import androidx.compose.ui.platform.LocalContext
+import java.util.Date
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun Registration(navHost: NavHostController, viewModel: RegistrationVM = viewModel())
 {
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
+    val passwordReturn = remember { mutableStateOf("") }
+    val name = remember { mutableStateOf("") }
+    val phone = remember { mutableStateOf("") }
+    val birthday = remember { mutableStateOf<Date?>(null) }
     val snackbarHostState = remember { SnackbarHostState() }
     var passwordVisibility: Boolean by remember { mutableStateOf(false) }
     val flag =  rememberSaveable { mutableStateOf(false) }
@@ -86,13 +100,16 @@ fun Registration(navHost: NavHostController, viewModel: RegistrationVM = viewMod
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
+                //.imePadding()
+                .verticalScroll(rememberScrollState())
         ) {
             Column(
                 Modifier
                     .background(color = white)
                     .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
-            ) {
+            )
+            {
                 Text(
                     "Создание\nаккаунта",
                     fontSize = 40.sp,
@@ -108,7 +125,7 @@ fun Registration(navHost: NavHostController, viewModel: RegistrationVM = viewMod
 
                 Column(modifier = Modifier.padding(bottom = 30.dp)) {
                     TextField(
-                        value = email.value,
+                        value = name.value,
                         textStyle = TextStyle(
                             fontSize = 20.sp,
                             color = darkBlue,
@@ -118,7 +135,7 @@ fun Registration(navHost: NavHostController, viewModel: RegistrationVM = viewMod
                         modifier = Modifier
                             .width(330.dp)
                             .height(60.dp),
-                        onValueChange = { newText -> email.value = newText },
+                        onValueChange = { newText -> name.value = newText },
                         shape = RoundedCornerShape(20.dp),
                         colors = TextFieldDefaults.colors(
                             unfocusedContainerColor = lightBlue,
@@ -139,7 +156,7 @@ fun Registration(navHost: NavHostController, viewModel: RegistrationVM = viewMod
                 }
                 Column(modifier = Modifier.padding(bottom = 30.dp)) {
                     TextField(
-                        value = email.value,
+                        value = phone.value,
                         textStyle = TextStyle(
                             fontSize = 20.sp,
                             color = darkBlue,
@@ -149,7 +166,7 @@ fun Registration(navHost: NavHostController, viewModel: RegistrationVM = viewMod
                         modifier = Modifier
                             .width(330.dp)
                             .height(60.dp),
-                        onValueChange = { newText -> email.value = newText },
+                        onValueChange = { newText -> phone.value = newText },
                         shape = RoundedCornerShape(20.dp),
                         colors = TextFieldDefaults.colors(
                             unfocusedContainerColor = lightBlue,
@@ -200,34 +217,8 @@ fun Registration(navHost: NavHostController, viewModel: RegistrationVM = viewMod
                     )
                 }
                 Column(modifier = Modifier.padding(bottom = 30.dp)) {
-                    TextField(
-                        value = email.value,
-                        textStyle = TextStyle(
-                            fontSize = 20.sp,
-                            color = darkBlue,
-                            fontWeight = FontWeight.ExtraBold,
-                            fontFamily = MaterialTheme.typography.bodyLarge.fontFamily
-                        ),
-                        modifier = Modifier
-                            .width(330.dp)
-                            .height(60.dp),
-                        onValueChange = { newText -> email.value = newText },
-                        shape = RoundedCornerShape(20.dp),
-                        colors = TextFieldDefaults.colors(
-                            unfocusedContainerColor = lightBlue,
-                            focusedContainerColor = lightBlue,
-                            unfocusedIndicatorColor = Color.Transparent,
-                            focusedIndicatorColor = Color.Transparent
-                        ),
-                        placeholder = {
-                            Text(
-                                text = "ДР",
-                                color = darkBlue,
-                                fontSize = 20.sp,
-                                style = MaterialTheme.typography.bodyLarge,
-                                fontWeight = FontWeight.ExtraBold
-                            )
-                        }
+                    DatePickerField(
+                        onDateSelected = { date -> birthday.value = date }
                     )
                 }
                 Column(modifier = Modifier.padding(bottom = 30.dp)) {
@@ -275,13 +266,13 @@ fun Registration(navHost: NavHostController, viewModel: RegistrationVM = viewMod
                 }
                 Column(modifier = Modifier.padding(bottom = 30.dp)) {
                     TextField(
-                        value = password.value,
+                        value = passwordReturn.value,
                         textStyle = TextStyle(
                             fontSize = 20.sp,
                             color = darkBlue,
                             fontWeight = FontWeight.ExtraBold,
                             fontFamily = MaterialTheme.typography.bodyLarge.fontFamily),
-                        onValueChange = {newText -> password.value = newText},
+                        onValueChange = {newText -> passwordReturn.value = newText},
                         modifier = Modifier.width(330.dp).height(60.dp),
                         colors = TextFieldDefaults.colors
                             (
@@ -300,8 +291,7 @@ fun Registration(navHost: NavHostController, viewModel: RegistrationVM = viewMod
                                 fontWeight = FontWeight.ExtraBold
                             )
                         },
-                        visualTransformation = if(passwordVisibility) VisualTransformation.None
-                        else PasswordVisualTransformation(),
+                        visualTransformation = if(passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
                         trailingIcon =
                         {
                             IconButton(onClick = { passwordVisibility = !passwordVisibility })
@@ -310,21 +300,41 @@ fun Registration(navHost: NavHostController, viewModel: RegistrationVM = viewMod
                                     painter = if (passwordVisibility) painterResource(id = R.drawable.eye_closed)
                                     else painterResource(id = R.drawable.eye),
                                     contentDescription = "",
+                                    tint = darkBlue,
                                     modifier = Modifier.padding(end = 10.dp)
                                 )
                             }
-                        },
+                        }
                     )
                 }
+
 
                 Button(
                     onClick = {
                         coroutineScope.launch {
-                            val result = viewModel.Auth(email.value, password.value)
-                            if (result) {
-                                navHost.navigate("ProdPage")
+                            if (password.value != passwordReturn.value)
+                            {
+                                coroutineScope.launch { snackbarHostState.showSnackbar("Пароли различаются!") }
+                            }
+                            else
+                            {
+                                coroutineScope.launch { snackbarHostState.showSnackbar("Пароли одинаковые!") }
+                                if (birthday.value != null) {
+                                val result = viewModel.Reg(
+                                    email.value,
+                                    password.value,
+                                    name.value,
+                                    phone.value,
+                                    birthday.value
+                                )
+                                if (result) {
+                                    navHost.navigate("ProdPage")
+                                } else {
+                                    snackbarHostState.showSnackbar("Поля пусты или введены некорректные данные!")
+                                }
                             } else {
-                                snackbarHostState.showSnackbar("Поля пусты или введены некорректные данные!")
+                                snackbarHostState.showSnackbar("Выберите дату рождения!")
+                            }
                             }
                         }
                     },
@@ -364,3 +374,71 @@ fun Registration(navHost: NavHostController, viewModel: RegistrationVM = viewMod
         }
     }
 }
+
+@Composable
+fun DatePickerField(onDateSelected: (Date?) -> Unit) {
+    var selectedDate by remember { mutableStateOf("") }
+    val calendar = Calendar.getInstance()
+
+    val context = LocalContext.current
+    var isDialogVisible by remember { mutableStateOf(false) }
+
+    if (isDialogVisible) {
+        val datePickerDialog = DatePickerDialog(
+            context,
+            { _, selectedYear, selectedMonth, selectedDay ->
+                calendar.set(selectedYear, selectedMonth, selectedDay)
+                val date = calendar.time
+                onDateSelected(date) // Передаём выбранную дату
+                selectedDate = "%02d.%02d.%d".format(selectedDay, selectedMonth + 1, selectedYear)
+                isDialogVisible = false
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        )
+        DisposableEffect(Unit) {
+            datePickerDialog.show()
+            onDispose { datePickerDialog.dismiss() }
+        }
+    }
+
+    Box()
+    {
+        OutlinedTextField(
+            value = selectedDate,
+            textStyle = TextStyle(
+                fontSize = 20.sp,
+                color = darkBlue,
+                fontWeight = FontWeight.ExtraBold,
+                fontFamily = MaterialTheme.typography.bodyLarge.fontFamily
+            ),
+            onValueChange = {},
+            readOnly = true,
+            placeholder = { Text(text = "дд.мм.гггг",  fontSize = 20.sp,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.ExtraBold) },
+            modifier = Modifier
+                .width(330.dp)
+                .height(60.dp)
+                .background(color = lightBlue, shape = RoundedCornerShape(20.dp)),
+            trailingIcon = {
+                IconButton(onClick = { isDialogVisible = true }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.calendar_cog),
+                        contentDescription = "",
+                        tint = darkBlue,
+                        modifier = Modifier.padding(end = 10.dp)
+                    )
+                }
+            },
+            colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = Color.Transparent,
+                unfocusedBorderColor = Color.Transparent,
+                backgroundColor = Color.Transparent,
+                textColor = darkBlue
+            )
+        )
+    }
+}
+

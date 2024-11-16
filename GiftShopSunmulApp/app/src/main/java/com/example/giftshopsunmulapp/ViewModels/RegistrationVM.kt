@@ -1,28 +1,30 @@
 package com.example.giftshopsunmulapp.ViewModels
 
-import android.annotation.SuppressLint
-import android.widget.Toast
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.giftshopsunmulapp.domain.utlis.Constants
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.builtin.Email
+import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.Date
 
 class RegistrationVM: ViewModel(){
 
-    suspend fun Auth(emailUser: String, passwordUser: String): Boolean
+    suspend fun Reg(
+        emailUser: String, passwordUser: String, nameUser:String, phoneUseer:String,
+        birthdayUser: Date?
+    ): Boolean
     {
-        if (emailUser.isBlank() || passwordUser.isBlank()) {
+        if (emailUser.isBlank() || passwordUser.isBlank() || nameUser.isBlank() || phoneUseer.isBlank() || birthdayUser == null) {
             return false
         }
+        println("Проверяем текущие значения:")
+        println("emailUser: $emailUser")
+        println("passwordUser: $passwordUser")
+        println("nameUser: $nameUser")
+        println("phoneUseer: $phoneUseer")
+        println("birthdayUser: $birthdayUser")
         return try
         {
             val user = withContext(Dispatchers.IO) {
@@ -31,8 +33,22 @@ class RegistrationVM: ViewModel(){
                     password = passwordUser
                 }
             }
+            val currentUser = Constants.supabase.auth.currentUserOrNull()
+            if (currentUser == null) {
+                println("Ошибка: пользователь не авторизован")
+                return false
+            }
+            val userPublic = Constants.supabase.from("user").insert(
+                mapOf(
+                    "id" to currentUser.id,
+                    "name" to nameUser,
+                    "phone" to phoneUseer,
+                    "birthday" to birthdayUser,
+                    "image" to null
+                )
+            )
             println(user.toString())
-            println(Constants.supabase.auth.currentUserOrNull()!!.id)
+            println(userPublic.toString())
             println("Успешно!")
             true
         }
