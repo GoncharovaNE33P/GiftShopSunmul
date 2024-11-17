@@ -45,8 +45,6 @@ fun MainPage(navHost: NavHostController)
 {
     val scale = remember { androidx.compose.animation.core.Animatable(0f) }
 
-    // https://developer.android.com/develop/ui/compose/animation/quick-guide?hl=ru
-    // https://developer.android.com/develop/ui/compose/animation/shared-elements?hl=ru
     LaunchedEffect(key1 = true) {
         scale.animateTo(
             targetValue = 0.7f,

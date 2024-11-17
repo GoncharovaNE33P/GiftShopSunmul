@@ -1,5 +1,7 @@
 package com.example.giftshopsunmulapp.model
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class prodInOrder(
     val id: String,
     val products_id: String,

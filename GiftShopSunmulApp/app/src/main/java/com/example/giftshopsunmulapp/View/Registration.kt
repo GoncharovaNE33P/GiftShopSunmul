@@ -1,7 +1,6 @@
 package com.example.giftshopsunmulapp.View
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.icu.util.Calendar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -9,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -32,7 +30,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -56,10 +53,14 @@ import com.example.giftshopsunmulapp.ui.theme.lightGreen
 import com.example.giftshopsunmulapp.ui.theme.white
 import kotlinx.coroutines.launch
 import android.app.DatePickerDialog
+import androidx.compose.foundation.layout.imePadding
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.runtime.DisposableEffect
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.ui.platform.LocalContext
+import kotlinx.coroutines.delay
+import java.time.LocalDate
 import java.util.Date
 
 @SuppressLint("CoroutineCreationDuringComposition")
@@ -71,10 +72,9 @@ fun Registration(navHost: NavHostController, viewModel: RegistrationVM = viewMod
     val passwordReturn = remember { mutableStateOf("") }
     val name = remember { mutableStateOf("") }
     val phone = remember { mutableStateOf("") }
-    val birthday = remember { mutableStateOf<Date?>(null) }
+    val birthdayDate = remember { mutableStateOf("")}
     val snackbarHostState = remember { SnackbarHostState() }
     var passwordVisibility: Boolean by remember { mutableStateOf(false) }
-    val flag =  rememberSaveable { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
 
     Scaffold(
@@ -100,7 +100,7 @@ fun Registration(navHost: NavHostController, viewModel: RegistrationVM = viewMod
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                //.imePadding()
+                .imePadding()
                 .verticalScroll(rememberScrollState())
         ) {
             Column(
@@ -218,7 +218,7 @@ fun Registration(navHost: NavHostController, viewModel: RegistrationVM = viewMod
                 }
                 Column(modifier = Modifier.padding(bottom = 30.dp)) {
                     DatePickerField(
-                        onDateSelected = { date -> birthday.value = date }
+                        onDateSelected = { date -> birthdayDate.value = viewModel.formatDateToSupabase(date) }
                     )
                 }
                 Column(modifier = Modifier.padding(bottom = 30.dp)) {
@@ -308,7 +308,6 @@ fun Registration(navHost: NavHostController, viewModel: RegistrationVM = viewMod
                     )
                 }
 
-
                 Button(
                     onClick = {
                         coroutineScope.launch {
@@ -319,22 +318,19 @@ fun Registration(navHost: NavHostController, viewModel: RegistrationVM = viewMod
                             else
                             {
                                 coroutineScope.launch { snackbarHostState.showSnackbar("Пароли одинаковые!") }
-                                if (birthday.value != null) {
+                                delay(1000L)
                                 val result = viewModel.Reg(
                                     email.value,
                                     password.value,
                                     name.value,
                                     phone.value,
-                                    birthday.value
+                                    birthdayDate.value
                                 )
                                 if (result) {
                                     navHost.navigate("ProdPage")
                                 } else {
                                     snackbarHostState.showSnackbar("Поля пусты или введены некорректные данные!")
                                 }
-                            } else {
-                                snackbarHostState.showSnackbar("Выберите дату рождения!")
-                            }
                             }
                         }
                     },

@@ -1,11 +1,11 @@
 package com.example.giftshopsunmulapp.model
+import kotlinx.serialization.Serializable
 
-import java.util.Date
-
+@Serializable
 data class user(
     val id: String,
     val name: String,
     val phone: String,
-    val birthday: Date?,
-    val image: String
+    val birthday: String,
+    val image: String?
 )

@@ -1,8 +1,10 @@
 package com.example.giftshopsunmulapp.model
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class products(
     val id: String,
-    val article: String,
+    val article: Int,
     val title: String,
     val grams: Int,
     val sing_18: Boolean,

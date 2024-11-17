@@ -7,18 +7,25 @@ import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
+import java.time.LocalDate
 import java.util.Date
+import java.util.Locale
 
 class RegistrationVM: ViewModel(){
 
+    fun formatDateToSupabase(date: Date?):String
+    {
+        if(date == null) return "null"
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        return  dateFormat.format((date))
+    }
+
     suspend fun Reg(
         emailUser: String, passwordUser: String, nameUser:String, phoneUseer:String,
-        birthdayUser: Date?
+        birthdayUser: String
     ): Boolean
     {
-        if (emailUser.isBlank() || passwordUser.isBlank() || nameUser.isBlank() || phoneUseer.isBlank() || birthdayUser == null) {
-            return false
-        }
         println("Проверяем текущие значения:")
         println("emailUser: $emailUser")
         println("passwordUser: $passwordUser")
@@ -27,20 +34,16 @@ class RegistrationVM: ViewModel(){
         println("birthdayUser: $birthdayUser")
         return try
         {
-            val user = withContext(Dispatchers.IO) {
-                Constants.supabase.auth.signInWith(Email) {
-                    email = emailUser
-                    password = passwordUser
-                }
+            if (emailUser.isBlank() || passwordUser.isBlank() || nameUser.isBlank() || phoneUseer.isBlank() || birthdayUser.isBlank())
+            { return false }
+
+            val user = Constants.supabase.auth.signUpWith(Email) {
+                email = emailUser
+                password = passwordUser
             }
-            val currentUser = Constants.supabase.auth.currentUserOrNull()
-            if (currentUser == null) {
-                println("Ошибка: пользователь не авторизован")
-                return false
-            }
-            val userPublic = Constants.supabase.from("user").insert(
+           val userPublic = Constants.supabase.from("user").insert(
                 mapOf(
-                    "id" to currentUser.id,
+                    "id" to Constants.supabase.auth.currentUserOrNull()!!.id,
                     "name" to nameUser,
                     "phone" to phoneUseer,
                     "birthday" to birthdayUser,

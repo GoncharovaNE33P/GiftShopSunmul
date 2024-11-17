@@ -20,7 +20,7 @@ fun Navigation(viewModel: MainViewModel)
 {
     val navController = rememberNavController()
     NavHost(navController = navController,
-        startDestination = "Registration")
+        startDestination = "Avtorization")
     {
         composable("MainPage")
         { MainPage(navController)}
