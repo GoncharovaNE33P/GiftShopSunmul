@@ -11,12 +11,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,6 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -55,6 +58,8 @@ import com.example.giftshopsunmulapp.ui.theme.lightGreen
 import com.example.giftshopsunmulapp.ui.theme.white
 import io.github.jan.supabase.storage.BucketApi
 import io.github.jan.supabase.storage.storage
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 //@Preview
@@ -158,7 +163,7 @@ fun ProdPage(navHost: NavHostController, viewModel: ProdPageVM = viewModel())
                     modifier = Modifier.padding(10.dp)
                 )
                 LazyRow(
-                    horizontalArrangement = Arrangement.spacedBy(15.dp),
+                    horizontalArrangement = Arrangement.spacedBy(25.dp),
                     contentPadding = PaddingValues(horizontal = 16.dp)
                 )
                 {
@@ -204,7 +209,7 @@ fun ProdPage(navHost: NavHostController, viewModel: ProdPageVM = viewModel())
                             )
                             Spacer(modifier = Modifier.height(5.dp))
                             Button(
-                                onClick = { /*navHost.navigate("Avtorization")*/ },
+                                onClick = { /*navHost.navigate("Avtorization") */},
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = lightGreen,
                                     contentColor = blue
@@ -213,17 +218,10 @@ fun ProdPage(navHost: NavHostController, viewModel: ProdPageVM = viewModel())
                                 shape = RoundedCornerShape(5.dp),
                             )
                             {
-                                Column (
-                                    verticalArrangement = Arrangement.Center,
-                                    horizontalAlignment = Alignment.CenterHorizontally
+                                Icon(
+                                    painter = painterResource(id = R.drawable.shopping_basket),
+                                    contentDescription = ""
                                 )
-                                {
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.shopping_basket),
-                                        contentDescription = "",
-                                        modifier = Modifier.size(24.dp)
-                                    )
-                                }
                             }
                         }
                     }
@@ -231,47 +229,79 @@ fun ProdPage(navHost: NavHostController, viewModel: ProdPageVM = viewModel())
             }
         }
 
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-        ) {
-            Box(
-                modifier = Modifier
-                    .height(100.dp)
-                    .fillMaxWidth()
-                    .background(Color.LightGray)
+        Column( modifier = Modifier
+            .background(color = white)
+            .padding(top = 20.dp, start = 15.dp)
+            .clip(RoundedCornerShape(15.dp)) )
+        {
+            Column( modifier = Modifier
+                .background(color = lightBlue)
+                .fillMaxHeight()
+                .width(380.dp)
             )
-            Spacer(modifier = Modifier.height(8.dp))
-            LazyRow()
             {
-                items(products) { prod ->
-                    Text(
-                        text = "${prod.price} ₽",
-                        fontSize = 20.sp,
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = blue,
-                        fontWeight = FontWeight.ExtraBold
-                    )
-                    Spacer(modifier = Modifier.height(5.dp))
-                    Text(
-                        text = prod.title,
-                        fontSize = 12.sp,
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = blue,
-                        fontWeight = FontWeight.ExtraBold,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    Spacer(modifier = Modifier.height(5.dp))
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(painterResource(R.drawable.star), contentDescription = null, tint = Color.Yellow)
-                        Text(text = "${prod.rating} - 2 отзывов", fontSize = 12.sp)
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(20.dp),
+                )
+                {
+                    items(products) { prod ->
+                        Column(horizontalAlignment = Alignment.Start,
+                            modifier = Modifier.width(180.dp)) {
+                            Box(
+                                modifier = Modifier
+                                    .size(180.dp)
+                                    .clip(RoundedCornerShape(5.dp))
+                                    .background(color = white)
+                                    .border(border = BorderStroke(1.dp, color = darkBlue), shape = RoundedCornerShape(5.dp))
+                            )
+                            {
+                                AsyncImage(
+                                    model = ImageRequest.Builder(LocalContext.current)
+                                        .data(prod.image)
+                                        .crossfade(true)
+                                        .build(),
+                                    contentDescription = "",
+                                    contentScale = ContentScale.Fit,
+                                    modifier = Modifier.fillMaxSize()
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(10.dp))
+                            Row()
+                            {
+                                Text(
+                                    text = "${prod.price} ₽",
+                                    fontSize = 20.sp,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = blue,
+                                    fontWeight = FontWeight.ExtraBold
+
+                                )
+                                IconButton(onClick = {  })
+                                {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.shopping_basket1),
+                                        contentDescription = "",
+                                        modifier = Modifier.padding(end = 10.dp)
+                                    )
+                                }
+                            }
+                            Spacer(modifier = Modifier.height(5.dp))
+                            Text(
+                                text = prod.title,
+                                fontSize = 15.sp,
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = blue,
+                                fontWeight = FontWeight.ExtraBold,
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                            Spacer(modifier = Modifier.height(5.dp))
+
+                        }
                     }
                 }
             }
         }
     }
 }
+
