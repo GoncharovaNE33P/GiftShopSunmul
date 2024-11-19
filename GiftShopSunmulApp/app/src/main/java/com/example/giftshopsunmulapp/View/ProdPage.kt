@@ -20,6 +20,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -28,10 +31,12 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.AbsoluteAlignment
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -109,7 +114,9 @@ fun ProdPage(navHost: NavHostController, viewModel: ProdPageVM = viewModel())
                     val imagePath = "pictures_categories/$englishName.png"
                     val imageUrl = viewModel.getPublicUrl("pictures_categories", imagePath)
                     Column(horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.width(92.dp).padding(start = 5.dp, end = 5.dp))
+                        modifier = Modifier
+                            .width(92.dp)
+                            .padding(start = 5.dp, end = 5.dp))
                     {
 
                         Box(
@@ -117,7 +124,10 @@ fun ProdPage(navHost: NavHostController, viewModel: ProdPageVM = viewModel())
                                 .size(50.dp)
                                 .clip(RoundedCornerShape(5.dp))
                                 .background(color = darkBlue)
-                                .border(border = BorderStroke(1.dp, color = white), shape = RoundedCornerShape(5.dp))
+                                .border(
+                                    border = BorderStroke(1.dp, color = white),
+                                    shape = RoundedCornerShape(5.dp)
+                                )
                         )
                         {
                             AsyncImage(
@@ -127,7 +137,9 @@ fun ProdPage(navHost: NavHostController, viewModel: ProdPageVM = viewModel())
                                     .build(),
                                 contentDescription = "",
                                 contentScale = ContentScale.Fit,
-                                modifier = Modifier.size(40.dp).align(Alignment.Center)
+                                modifier = Modifier
+                                    .size(40.dp)
+                                    .align(Alignment.Center)
                             )
                         }
                         Spacer(modifier = Modifier.height(3.dp))
@@ -169,13 +181,18 @@ fun ProdPage(navHost: NavHostController, viewModel: ProdPageVM = viewModel())
                 {
                     items(filteredProducts) { prod ->
                         Column(horizontalAlignment = Alignment.Start,
-                            modifier = Modifier.width(100.dp).padding(start = 5.dp, end = 5.dp)) {
+                            modifier = Modifier
+                                .width(100.dp)
+                                .padding(start = 5.dp, end = 5.dp)) {
                             Box(
                                 modifier = Modifier
                                     .size(100.dp)
                                     .clip(RoundedCornerShape(5.dp))
                                     .background(color = white)
-                                    .border(border = BorderStroke(1.dp, color = darkBlue), shape = RoundedCornerShape(5.dp))
+                                    .border(
+                                        border = BorderStroke(1.dp, color = darkBlue),
+                                        shape = RoundedCornerShape(5.dp)
+                                    )
                             )
                             {
                                 AsyncImage(
@@ -208,20 +225,29 @@ fun ProdPage(navHost: NavHostController, viewModel: ProdPageVM = viewModel())
                                 overflow = TextOverflow.Ellipsis
                             )
                             Spacer(modifier = Modifier.height(5.dp))
-                            Button(
-                                onClick = { /*navHost.navigate("Avtorization") */},
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = lightGreen,
-                                    contentColor = blue
-                                ),
-                                modifier = Modifier.height(30.dp).width(100.dp),
-                                shape = RoundedCornerShape(5.dp),
+                            Column( modifier = Modifier
+                                .clip(RoundedCornerShape(5.dp))
                             )
                             {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.shopping_basket),
-                                    contentDescription = ""
+                                Column(
+                                    modifier = Modifier
+                                        .background(color = lightGreen)
+                                        .height(30.dp)
+                                        .width(100.dp),
+                                    verticalArrangement = Arrangement.Center,
+                                    horizontalAlignment = Alignment.CenterHorizontally
                                 )
+                                {
+                                    IconButton(onClick = {  })
+                                    {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.shopping_basket),
+                                            contentDescription = "",
+                                            modifier = Modifier.size(20.dp),
+                                            tint = blue,
+                                        )
+                                    }
+                                }
                             }
                         }
                     }
@@ -235,13 +261,15 @@ fun ProdPage(navHost: NavHostController, viewModel: ProdPageVM = viewModel())
             .clip(RoundedCornerShape(15.dp)) )
         {
             Column( modifier = Modifier
-                .background(color = lightBlue)
                 .fillMaxHeight()
                 .width(380.dp)
             )
             {
-                LazyRow(
-                    horizontalArrangement = Arrangement.spacedBy(20.dp),
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    horizontalArrangement = Arrangement.spacedBy(15.dp),
+                    verticalArrangement = Arrangement.spacedBy(15.dp),
+                    modifier = Modifier.padding(8.dp)
                 )
                 {
                     items(products) { prod ->
@@ -252,7 +280,10 @@ fun ProdPage(navHost: NavHostController, viewModel: ProdPageVM = viewModel())
                                     .size(180.dp)
                                     .clip(RoundedCornerShape(5.dp))
                                     .background(color = white)
-                                    .border(border = BorderStroke(1.dp, color = darkBlue), shape = RoundedCornerShape(5.dp))
+                                    .border(
+                                        border = BorderStroke(1.dp, color = lightGreen),
+                                        shape = RoundedCornerShape(5.dp)
+                                    )
                             )
                             {
                                 AsyncImage(
@@ -266,23 +297,39 @@ fun ProdPage(navHost: NavHostController, viewModel: ProdPageVM = viewModel())
                                 )
                             }
                             Spacer(modifier = Modifier.height(10.dp))
-                            Row()
+                            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.width(180.dp))
                             {
                                 Text(
                                     text = "${prod.price} ₽",
                                     fontSize = 20.sp,
                                     style = MaterialTheme.typography.bodyLarge,
                                     color = blue,
-                                    fontWeight = FontWeight.ExtraBold
-
+                                    fontWeight = FontWeight.ExtraBold,
+                                    modifier = Modifier.weight(1f)
                                 )
-                                IconButton(onClick = {  })
+
+                                Column( modifier = Modifier
+                                    .clip(RoundedCornerShape(5.dp)),
+                                    verticalArrangement = Arrangement.Center,
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                )
                                 {
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.shopping_basket1),
-                                        contentDescription = "",
-                                        modifier = Modifier.padding(end = 10.dp)
+                                    Column(
+                                        modifier = Modifier
+                                            .background(color = blue)
+                                            .size(24.dp)
                                     )
+                                    {
+                                        IconButton(onClick = {  })
+                                        {
+                                            Icon(
+                                                painter = painterResource(id = R.drawable.shopping_basket1),
+                                                contentDescription = "",
+                                                modifier = Modifier.size(20.dp),
+                                                tint = lightGreen,
+                                            )
+                                        }
+                                    }
                                 }
                             }
                             Spacer(modifier = Modifier.height(5.dp))
@@ -296,7 +343,23 @@ fun ProdPage(navHost: NavHostController, viewModel: ProdPageVM = viewModel())
                                 overflow = TextOverflow.Ellipsis
                             )
                             Spacer(modifier = Modifier.height(5.dp))
-
+                            Row(verticalAlignment = Alignment.CenterVertically)
+                            {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.star),
+                                    contentDescription = "",
+                                    modifier = Modifier.size(18.dp),
+                                    tint = blue,
+                                )
+                                Spacer(modifier = Modifier.height(5.dp))
+                                Text(
+                                    text = "${prod.rating} – ${prod.rating} отзывы",
+                                    fontSize = 15.sp,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = blue,
+                                    fontWeight = FontWeight.ExtraBold
+                                )
+                            }
                         }
                     }
                 }
