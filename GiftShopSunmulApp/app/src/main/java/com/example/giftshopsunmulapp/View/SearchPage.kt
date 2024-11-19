@@ -7,25 +7,26 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.Icon
@@ -33,9 +34,13 @@ import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -49,11 +54,10 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.giftshopsunmulapp.R
 import com.example.giftshopsunmulapp.ViewModels.MainViewModel
-import com.example.giftshopsunmulapp.ViewModels.ProdPageVM
+import com.example.giftshopsunmulapp.ViewModels.SearchPageVM
 import com.example.giftshopsunmulapp.model.categories
 import com.example.giftshopsunmulapp.model.products
 import com.example.giftshopsunmulapp.ui.theme.blue
-import com.example.giftshopsunmulapp.ui.theme.darkBlue
 import com.example.giftshopsunmulapp.ui.theme.lightBlue
 import com.example.giftshopsunmulapp.ui.theme.lightGreen
 import com.example.giftshopsunmulapp.ui.theme.white
@@ -61,12 +65,12 @@ import com.example.giftshopsunmulapp.ui.theme.white
 
 //@Preview
 @Composable
-fun ProdPage(navHost: NavHostController, viewModel: ProdPageVM = viewModel())
+fun SearchPage(navHost: NavHostController, viewModel: SearchPageVM = viewModel())
 {
     val userEmail = MainViewModel.PrefsHelper.getSharedPreferences().getString("user_email", null)
     println("сейчас пользователь " + userEmail)
 
-    val categories by viewModel.ListCategories.collectAsState()
+    val productsFilter by viewModel.FilteredProducts.collectAsState()
     val products by viewModel.ListProd.collectAsState()
 
     val isDataLoaded by viewModel.isDataLoaded.collectAsState()
@@ -82,18 +86,19 @@ fun ProdPage(navHost: NavHostController, viewModel: ProdPageVM = viewModel())
     } else {
         Box()
         {
-            MainPageContent(
-                navHost,
-                categories,
-                products,
-                viewModel)
+//            MainPageContent(
+//                navHost,
+//                categories,
+//                products,
+//                viewModel)
             Row(modifier = Modifier.align(Alignment.BottomCenter))
-            { BtNavnBarP(navHost) }
+            { BtNavnBarS(navHost) }
         }
     }
 }
+
 @Composable
-fun BtNavnBarP(navHost: NavHostController)
+fun BtNavnBarS(navHost: NavHostController)
 {
     BottomNavigation(
         modifier = Modifier.fillMaxWidth().height(60.dp),
@@ -101,13 +106,13 @@ fun BtNavnBarP(navHost: NavHostController)
         contentColor = white,
     ) {
         BottomNavigationItem(
-            icon = { Icon(painterResource(R.drawable.package_search_main), contentDescription = null, tint = lightGreen) },
-            selected = true,
+            icon = { Icon(painterResource(R.drawable.package_search), contentDescription = null, tint = lightBlue) },
+            selected = false,
             onClick = {  navHost.navigate("ProdPage") }
         )
         BottomNavigationItem(
-            icon = { Icon(painterResource(R.drawable.search), contentDescription = null,tint = lightBlue) },
-            selected = false,
+            icon = { Icon(painterResource(R.drawable.search_main), contentDescription = null,tint = lightGreen) },
+            selected = true,
             onClick = {  navHost.navigate("SearchPage") }
         )
         BottomNavigationItem(
@@ -129,189 +134,20 @@ fun BtNavnBarP(navHost: NavHostController)
 }
 
 @Composable
-fun MainPageContent(navHost: NavHostController,categories: List<categories>, products: List<products>,
- viewModel: ProdPageVM = viewModel())
+fun MainPageContent(navHost: NavHostController, categories: List<categories>, products: List<products>,
+ viewModel: SearchPageVM = viewModel())
 {
-    val filteredProducts = products.filter { it.rating >= 4.5 }
-    val categoryMapping = mapOf(
-        "Аксессуары" to "accesories",
-        "Декор" to "decor",
-        "Книги" to "book",
-        "Косметика" to "cosmetics",
-        "Кулинария" to "cook",
-        "Игры" to "games",
-        "Одежда" to "clothes",
-        "Спорт" to "sport",
-        "Хобби" to "hobby",
-        "Гаджеты" to "gadget"
-    )
+
 
     Column(modifier = Modifier
         .fillMaxSize()
         .background(color = white)
     )
     {
-        Column( modifier = Modifier
-            .background(color = white)
-            .padding(top = 50.dp, start = 15.dp)
-            .clip(RoundedCornerShape(15.dp)) )
-        {
-            LazyRow(
-                modifier = Modifier
-                    .background(color = lightBlue)
-                    .height(90.dp)
-                    .width(380.dp)
-                    .padding(top = 10.dp),
-                horizontalArrangement = Arrangement.spacedBy(15.dp),
-                contentPadding = PaddingValues(horizontal = 16.dp)
-            )
-            {
-                items(categories) { category ->
-                    val englishName = categoryMapping[category.title]
-                    val imagePath = "pictures_categories/$englishName.png"
-                    val imageUrl = viewModel.getPublicUrl("pictures_categories", imagePath)
-                    Column(horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier
-                            .width(92.dp)
-                            .padding(start = 5.dp, end = 5.dp))
-                    {
-
-                        Box(
-                            modifier = Modifier
-                                .size(50.dp)
-                                .clip(RoundedCornerShape(5.dp))
-                                .background(color = darkBlue)
-                                .border(
-                                    border = BorderStroke(1.dp, color = white),
-                                    shape = RoundedCornerShape(5.dp)
-                                )
-                        )
-                        {
-                            AsyncImage(
-                                model = ImageRequest.Builder(LocalContext.current)
-                                    .data(imageUrl)
-                                    .crossfade(true)
-                                    .build(),
-                                contentDescription = "",
-                                contentScale = ContentScale.Fit,
-                                modifier = Modifier
-                                    .size(40.dp)
-                                    .align(Alignment.Center)
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(3.dp))
-                        Text(
-                            text = category.title,
-                            fontSize = 12.sp,
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = blue,
-                            fontWeight = FontWeight.ExtraBold
-                        )
-                    }
-                }
-            }
-        }
-
-        Column( modifier = Modifier
-            .background(color = white)
-            .padding(top = 10.dp, start = 15.dp)
-            .clip(RoundedCornerShape(15.dp)) )
-        {
-            Column( modifier = Modifier
-                .background(color = lightBlue)
-                .height(250.dp)
-                .width(380.dp)
-            )
-            {
-                Text(
-                    text = "Самое популярное",
-                    fontSize = 18.sp,
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.W900,
-                    color = blue,
-                    modifier = Modifier.padding(10.dp)
-                )
-                LazyRow(
-                    horizontalArrangement = Arrangement.spacedBy(25.dp),
-                    contentPadding = PaddingValues(horizontal = 16.dp)
-                )
-                {
-                    items(filteredProducts) { prod ->
-                        Column(horizontalAlignment = Alignment.Start,
-                            modifier = Modifier
-                                .width(100.dp)
-                                .padding(start = 5.dp, end = 5.dp)) {
-                            Box(
-                                modifier = Modifier
-                                    .size(100.dp)
-                                    .clip(RoundedCornerShape(5.dp))
-                                    .background(color = white)
-                                    .border(
-                                        border = BorderStroke(1.dp, color = darkBlue),
-                                        shape = RoundedCornerShape(5.dp)
-                                    )
-                            )
-                            {
-                                AsyncImage(
-                                    model = ImageRequest.Builder(LocalContext.current)
-                                        .data(prod.image)
-                                        .crossfade(true)
-                                        .build(),
-                                    contentDescription = "",
-                                    contentScale = ContentScale.Fit,
-                                    modifier = Modifier.fillMaxSize()
-                                )
-                            }
-                            Spacer(modifier = Modifier.height(10.dp))
-                            Text(
-                                text = "${prod.price} ₽",
-                                fontSize = 12.sp,
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = blue,
-                                fontWeight = FontWeight.ExtraBold
-
-                            )
-                            Spacer(modifier = Modifier.height(5.dp))
-                            Text(
-                                text = prod.title,
-                                fontSize = 12.sp,
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = blue,
-                                fontWeight = FontWeight.ExtraBold,
-                                maxLines = 2,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                            Spacer(modifier = Modifier.height(5.dp))
-                            Column( modifier = Modifier
-                                .clip(RoundedCornerShape(5.dp))
-                            )
-                            {
-                                Column(
-                                    modifier = Modifier
-                                        .background(color = lightGreen)
-                                        .height(30.dp)
-                                        .width(100.dp),
-                                    verticalArrangement = Arrangement.Center,
-                                    horizontalAlignment = Alignment.CenterHorizontally
-                                )
-                                {
-                                    IconButton(onClick = {  })
-                                    {
-                                        Icon(
-                                            painter = painterResource(id = R.drawable.shopping_basket),
-                                            contentDescription = "",
-                                            modifier = Modifier.size(20.dp),
-                                            tint = blue,
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
+        SearchAndSortBar(
+            onSearch = { query -> viewModel.filterProducts(query) },
+            onSort = { sortOption -> viewModel.sortProducts(sortOption) }
+        )
         Column( modifier = Modifier
             .background(color = white)
             .padding(top = 10.dp, start = 15.dp)
@@ -417,6 +253,114 @@ fun MainPageContent(navHost: NavHostController,categories: List<categories>, pro
                                 )
                             }
                         }
+                    }
+                }
+            }
+        }
+    }
+}
+
+enum class SortOption {
+    RatingDescending,
+    PriceAscending,
+    PriceDescending,
+    Popularity
+}
+
+@Composable
+fun SearchAndSortBar(
+    onSearch: (String) -> Unit,
+    onSort: (SortOption) -> Unit
+) {
+    var searchText by remember { mutableStateOf("") }
+    var expanded by remember { mutableStateOf(false) }
+    var selectedSort by remember { mutableStateOf(SortOption.Popularity) }
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+            .clip(RoundedCornerShape(10.dp))
+            .background(color = lightBlue)
+            .padding(8.dp)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            // Поисковая строка
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.weight(1f)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = "Search Icon",
+                    tint = blue,
+                    modifier = Modifier.size(24.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                TextField(
+                    value = searchText,
+                    onValueChange = {
+                        searchText = it
+                        onSearch(it) // Вызываем обработчик поиска
+                    },
+                    placeholder = { Text("Поиск", color = blue) },
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        cursorColor = blue
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            // Сортировка
+            Box {
+                IconButton(onClick = { expanded = true }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.search_main), // Ваша иконка сортировки
+                        contentDescription = "Sort Icon",
+                        tint = blue
+                    )
+                }
+
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    DropdownMenuItem(onClick = {
+                        selectedSort = SortOption.RatingDescending
+                        onSort(selectedSort)
+                        expanded = false
+                    }) {
+                        Text("По рейтингу (убыв.)")
+                    }
+                    DropdownMenuItem(onClick = {
+                        selectedSort = SortOption.PriceAscending
+                        onSort(selectedSort)
+                        expanded = false
+                    }) {
+                        Text("По цене (возраст.)")
+                    }
+                    DropdownMenuItem(onClick = {
+                        selectedSort = SortOption.PriceDescending
+                        onSort(selectedSort)
+                        expanded = false
+                    }) {
+                        Text("По цене (убыв.)")
+                    }
+                    DropdownMenuItem(onClick = {
+                        selectedSort = SortOption.Popularity
+                        onSort(selectedSort)
+                        expanded = false
+                    }) {
+                        Text("Популярные (отзыв.)")
                     }
                 }
             }

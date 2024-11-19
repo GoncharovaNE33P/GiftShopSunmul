@@ -10,5 +10,8 @@ data class reviews(
     val products_id: String,
     val estimation: Int,
     val comment: String,
-    val date_rev: String
+    val date_rev: String,
+
+    var users: List<user>? = null,
+    var products: List<products>? = null,
 )

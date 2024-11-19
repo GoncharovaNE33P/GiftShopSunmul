@@ -59,6 +59,7 @@ import androidx.compose.material.OutlinedTextField
 import androidx.compose.runtime.DisposableEffect
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import kotlinx.coroutines.delay
 import java.time.LocalDate
 import java.util.Date
@@ -73,6 +74,7 @@ fun Registration(navHost: NavHostController, viewModel: RegistrationVM = viewMod
     val name = remember { mutableStateOf("") }
     val phone = remember { mutableStateOf("") }
     val birthdayDate = remember { mutableStateOf("")}
+    val keyboardController = LocalSoftwareKeyboardController.current
     val snackbarHostState = remember { SnackbarHostState() }
     var passwordVisibility: Boolean by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
@@ -96,11 +98,10 @@ fun Registration(navHost: NavHostController, viewModel: RegistrationVM = viewMod
             }
         }
     ) { paddingValues ->
-        Box(
+       Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .imePadding()
                 .verticalScroll(rememberScrollState())
         ) {
             Column(

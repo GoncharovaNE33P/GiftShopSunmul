@@ -11,8 +11,13 @@ data class products(
     val description: String,
     val price: Int,
     val image: String,
+    val countRev: Int,
     val rating: Float,
     val country_id: String,
     val categories_id: String,
-    val prodStatus_id: String
+    val prodStatus_id: String,
+
+    var country: countryProd? = null,
+    var categories: categories? = null,
+    var prodStatus: productsStatus? = null,
 )

@@ -39,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -54,6 +55,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.giftshopsunmulapp.R
 import com.example.giftshopsunmulapp.ViewModels.AvtorizationVM
+import com.example.giftshopsunmulapp.ViewModels.MainViewModel
 import com.example.giftshopsunmulapp.ui.theme.blue
 import com.example.giftshopsunmulapp.ui.theme.darkBlue
 import com.example.giftshopsunmulapp.ui.theme.lightBlue
@@ -68,6 +70,7 @@ fun Avtorization(navHost: NavHostController, viewModel: AvtorizationVM = viewMod
 {
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     Column(Modifier.background(color = white).fillMaxSize().imePadding().verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally)
@@ -235,4 +238,7 @@ fun Avtorization(navHost: NavHostController, viewModel: AvtorizationVM = viewMod
             }
         }
     }
+    val editor = MainViewModel.PrefsHelper.getSharedPreferences().edit()
+    editor.putString("user_email", email.value)
+    editor.apply()
 }
