@@ -2,7 +2,6 @@
 
 package com.example.giftshopsunmulapp.View
 
-import android.widget.Toast
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -26,46 +25,27 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.Colors
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.Scaffold
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material.TopAppBar
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.SearchBar
-import androidx.compose.material3.SearchBarDefaults
-import androidx.compose.material3.TextFieldColors
-import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -76,16 +56,13 @@ import com.example.giftshopsunmulapp.R
 import com.example.giftshopsunmulapp.ViewModels.MainViewModel
 import com.example.giftshopsunmulapp.ViewModels.ProdPageVM
 import com.example.giftshopsunmulapp.ViewModels.SearchPageVM
-import com.example.giftshopsunmulapp.model.categories
 import com.example.giftshopsunmulapp.model.products
 import com.example.giftshopsunmulapp.ui.theme.blue
-import com.example.giftshopsunmulapp.ui.theme.darkBlue
 import com.example.giftshopsunmulapp.ui.theme.lightBlue
 import com.example.giftshopsunmulapp.ui.theme.lightGreen
 import com.example.giftshopsunmulapp.ui.theme.white
 
 
-//@Preview
 @Composable
 fun SearchPage(navHost: NavHostController, viewModelP: ProdPageVM = viewModel(),viewModelS: SearchPageVM = viewModel())
 {
@@ -93,6 +70,7 @@ fun SearchPage(navHost: NavHostController, viewModelP: ProdPageVM = viewModel(),
     println("сейчас пользователь " + userEmail)
 
     val FP by viewModelS.FoundProd.collectAsState()
+    val filteredProducts = remember { mutableStateOf<List<products>?>(null) }
     val isDataLoaded by viewModelP.isDataLoaded.collectAsState()
 
     if (!isDataLoaded)
@@ -110,7 +88,31 @@ fun SearchPage(navHost: NavHostController, viewModelP: ProdPageVM = viewModel(),
     {
         Box()
         {
-            //Search(FP, onSearchResult = {filtredProd -> if ()})
+            Search(FP = FP) { filtredProd ->
+                filteredProducts.value = filtredProd
+            }
+
+            // Отображение результата
+            if (filteredProducts.value == null) {
+                // Пока ничего не введено, ничего не отображаем
+            } else if (filteredProducts.value!!.isNotEmpty()) {
+                MainPageContent(navHost, filteredProducts.value!!, viewModelP)
+            } else {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Ничего не найдено",
+                        color = blue,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+
             Row(modifier = Modifier.align(Alignment.BottomCenter))
             { BtNavnBarS(navHost) }
         }
@@ -122,6 +124,8 @@ fun Search(FP:List<products>, onSearchResult: (List<products>) -> Unit)
 {
     val searchStr = remember { mutableStateOf("") }
     val foundProd = FP.filter { prod  ->  prod.title.contains(searchStr.value!!,ignoreCase = true) }
+
+    onSearchResult(foundProd)
 
     Column(modifier = Modifier
         .fillMaxWidth()
@@ -159,7 +163,7 @@ fun Search(FP:List<products>, onSearchResult: (List<products>) -> Unit)
             leadingIcon =
             {
                 Icon(
-                    painter = painterResource(id = R.drawable.search),
+                    painter = painterResource(id = R.drawable.searchbar),
                     contentDescription = "",
                     tint = blue,
                     modifier = Modifier.clickable {

@@ -10,12 +10,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-enum class SortOption {
-    RatingDescending,
-    PriceAscending,
-    PriceDescending,
-    Popularity
-}
 
 class SearchPageVM: MainViewModel(){
 

@@ -64,7 +64,6 @@ fun Avtorization(navHost: NavHostController, viewModel: AvtorizationVM = viewMod
 {
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
-    val keyboardController = LocalSoftwareKeyboardController.current
 
     Column(Modifier.background(color = white).fillMaxSize().imePadding().verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally)
@@ -84,23 +83,25 @@ fun Avtorization(navHost: NavHostController, viewModel: AvtorizationVM = viewMod
                 TextField(value = email.value,
                     textStyle = TextStyle(
                         fontSize = 20.sp,
-                        color = darkBlue,
+                        color = blue,
                         fontWeight = FontWeight.ExtraBold,
                         fontFamily = MaterialTheme.typography.bodyLarge.fontFamily),
                     modifier = Modifier.width(330.dp).height(60.dp),
                     onValueChange = {newText -> email.value = newText},
                     shape = RoundedCornerShape(20.dp),
+                    maxLines = 1,
                     colors = TextFieldDefaults.colors
                         (
                         unfocusedContainerColor = lightBlue,
                         focusedContainerColor = lightBlue,
                         unfocusedIndicatorColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent
+                        focusedIndicatorColor = Color.Transparent,
+                        cursorColor = darkBlue
                     ),
                     placeholder = {
                         Text(
                             text = "Почта",
-                            color = darkBlue,
+                            color = blue,
                             fontSize = 20.sp,
                             style = MaterialTheme.typography.bodyLarge,
                             fontWeight = FontWeight.ExtraBold
@@ -114,10 +115,11 @@ fun Avtorization(navHost: NavHostController, viewModel: AvtorizationVM = viewMod
             value = password.value,
             textStyle = TextStyle(
                 fontSize = 20.sp,
-                color = darkBlue,
+                color = blue,
                 fontWeight = FontWeight.ExtraBold,
                 fontFamily = MaterialTheme.typography.bodyLarge.fontFamily),
             onValueChange = {newText -> password.value = newText},
+            maxLines = 1,
             modifier = Modifier
                 .padding(bottom = 40.dp).width(330.dp).height(60.dp),
             colors = TextFieldDefaults.colors
@@ -125,13 +127,14 @@ fun Avtorization(navHost: NavHostController, viewModel: AvtorizationVM = viewMod
                 unfocusedContainerColor = lightBlue,
                 focusedContainerColor = lightBlue,
                 unfocusedIndicatorColor = Color.Transparent,
-                focusedIndicatorColor = Color.Transparent
+                focusedIndicatorColor = Color.Transparent,
+                cursorColor = darkBlue
             ),
             shape = RoundedCornerShape(20.dp),
             placeholder = {
                 Text(
                     text = "Пароль",
-                    color = darkBlue,
+                    color = blue,
                     fontSize = 20.sp,
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.ExtraBold
@@ -146,7 +149,7 @@ fun Avtorization(navHost: NavHostController, viewModel: AvtorizationVM = viewMod
                     Icon(
                         painter = if (passwordVisibility) painterResource(id = R.drawable.eye_closed)
                         else painterResource(id = R.drawable.eye),
-                        contentDescription = "",
+                        contentDescription = "", tint = blue,
                         modifier = Modifier.padding(end = 10.dp)
                     )
                 }
@@ -164,8 +167,8 @@ fun Avtorization(navHost: NavHostController, viewModel: AvtorizationVM = viewMod
                     flag.value = result
                     if (flag.value)
                     {
-                       // navHost.navigate("ProdPage")
-                        navHost.navigate("SearchPage")
+                       navHost.navigate("ProdPage")
+                        //navHost.navigate("SearchPage")
                     }
                     else
                     {
@@ -199,7 +202,7 @@ fun Avtorization(navHost: NavHostController, viewModel: AvtorizationVM = viewMod
             modifier = Modifier
                 .padding(bottom = 20.dp),
             colors = ButtonDefaults.buttonColors(
-                contentColor = darkBlue,
+                contentColor = blue,
                 containerColor = Color.Transparent
             )
         )
@@ -208,7 +211,8 @@ fun Avtorization(navHost: NavHostController, viewModel: AvtorizationVM = viewMod
                 "Ещё нет аккаунта?",
                 fontSize = 16.sp,
                 style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.ExtraBold
+                fontWeight = FontWeight.ExtraBold,
+                color = blue
             )
         }
         SnackbarHost(
@@ -227,7 +231,7 @@ fun Avtorization(navHost: NavHostController, viewModel: AvtorizationVM = viewMod
                     textAlign = TextAlign.Center,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.ExtraBold,
-                    color = darkBlue,
+                    color = blue,
                     modifier = Modifier.fillMaxWidth()
                 )
             }

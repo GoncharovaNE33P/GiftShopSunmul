@@ -4,17 +4,16 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -24,6 +23,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material3.MaterialTheme
@@ -71,7 +71,6 @@ fun ProdPage(navHost: NavHostController, viewModel: ProdPageVM = viewModel())
 
     val isDataLoaded by viewModel.isDataLoaded.collectAsState()
 
-
     if (!isDataLoaded) {
         Box(
             modifier = Modifier.fillMaxSize().background(white),
@@ -92,6 +91,7 @@ fun ProdPage(navHost: NavHostController, viewModel: ProdPageVM = viewModel())
         }
     }
 }
+
 @Composable
 fun BtNavnBarP(navHost: NavHostController)
 {
@@ -349,7 +349,9 @@ fun MainPageContent(navHost: NavHostController,categories: List<categories>, pro
                                         .build(),
                                     contentDescription = "",
                                     contentScale = ContentScale.Fit,
-                                    modifier = Modifier.fillMaxSize()
+                                    modifier = Modifier.fillMaxSize().clickable {
+                                        navHost.navigate("ProdCardPage/${prod.id}")
+                                    }
                                 )
                             }
                             Spacer(modifier = Modifier.height(10.dp))

@@ -5,16 +5,20 @@ import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHost
 import androidx.navigation.Navigation
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.giftshopsunmulapp.View.Avtorization
 import com.example.giftshopsunmulapp.View.MainPage
+import com.example.giftshopsunmulapp.View.ProdCardPage
 import com.example.giftshopsunmulapp.View.ProdPage
 import com.example.giftshopsunmulapp.View.Registration
 import com.example.giftshopsunmulapp.View.SearchPage
 import com.example.giftshopsunmulapp.ViewModels.AvtorizationVM
 import com.example.giftshopsunmulapp.ViewModels.MainViewModel
+import com.example.giftshopsunmulapp.ViewModels.ProdCardPageVM
 import com.example.giftshopsunmulapp.ViewModels.ProdPageVM
 import com.example.giftshopsunmulapp.ViewModels.RegistrationVM
 import com.example.giftshopsunmulapp.ViewModels.SearchPageVM
@@ -50,5 +54,16 @@ fun Navigation(viewModel: MainViewModel, context: Context)
 
         composable("SearchPage")
         { SearchPage(navController, ProdPageVM(),SearchPageVM())}
+
+        composable(
+            "ProdCardPage/{prod.id}",
+            arguments = listOf(
+                navArgument(name = "prod.id"){
+                    type = NavType.StringType
+                }
+            )
+        ){backStackEntry ->
+            ProdCardPage(navController, ProdCardPageVM(), backStackEntry.arguments?.getString("prod.id"))
+        }
     }
 }

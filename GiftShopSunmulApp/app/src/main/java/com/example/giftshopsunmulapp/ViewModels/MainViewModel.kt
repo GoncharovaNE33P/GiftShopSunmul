@@ -7,7 +7,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.giftshopsunmulapp.domain.utlis.Constants
 import com.example.giftshopsunmulapp.model.categories
+import com.example.giftshopsunmulapp.model.countryProd
 import com.example.giftshopsunmulapp.model.products
+import com.example.giftshopsunmulapp.model.productsStatus
+import com.example.giftshopsunmulapp.model.user
 import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -30,8 +33,6 @@ open class MainViewModel:ViewModel()
     val _isDataLoaded = MutableStateFlow(false)
     val isDataLoaded: StateFlow<Boolean> = _isDataLoaded
 
-    val _listCategories = MutableStateFlow<List<categories>>(emptyList())
-    var ListCategories: StateFlow<List<categories>> = _listCategories
     val _listProd = MutableStateFlow<List<products>>(emptyList())
     var ListProd: StateFlow<List<products>> = _listProd
 
@@ -40,8 +41,19 @@ open class MainViewModel:ViewModel()
         viewModelScope.launch {
             try
             {
-                _listCategories.value = Constants.supabase.from("categories").select().decodeList<categories>()
-                _listProd.value = Constants.supabase.from("products").select().decodeList<products>()
+                val _User = Constants.supabase.from("user").select().decodeList<user>()
+                val _Prod = Constants.supabase.from("products").select().decodeList<products>()
+                val _Categories = Constants.supabase.from("categories").select().decodeList<categories>()
+                val _ProdStatus = Constants.supabase.from("productsStatus").select().decodeList<productsStatus>()
+                val _CountyProd = Constants.supabase.from("countryProd").select().decodeList<countryProd>()
+
+                _listProd.value = _Prod.map { prod ->
+                    prod.prodStatus = _ProdStatus.find { it.id == prod.prodStatus_id }
+                    prod.categories = _Categories.find { it.id == prod.categories_id }
+                    prod.country = _CountyProd.find { it.id == prod.country_id }
+                    prod
+                }
+
                 _isDataLoaded.value = true
             }
             catch(e: Exception)
