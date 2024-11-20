@@ -17,57 +17,19 @@ enum class SortOption {
     Popularity
 }
 
-class SearchPageVM: ViewModel(){
+class SearchPageVM: MainViewModel(){
 
-    val _isDataLoaded = MutableStateFlow(false)
-    val isDataLoaded: StateFlow<Boolean> = _isDataLoaded
+    val _foundProd = _listProd
+    var FoundProd: StateFlow<List<products>> = _foundProd
 
-    fun getRevCount(countRev: Int): String
-    {
-        var text = ""
-        if (countRev == 1) { text = "отзыв" }
-        else if (countRev in 2..4) { text = "отзыва" }
-        else { text = "отзывов" }
-        return "${countRev} ${text}"
-    }
-
-    private val _listProd = MutableStateFlow<List<products>>(emptyList())
-    private val _filteredProducts = MutableStateFlow<List<products>>(emptyList())
-
-    var ListProd: StateFlow<List<products>> = _listProd
-    var FilteredProducts: StateFlow<List<products>> = _filteredProducts
-
-    fun filterProducts(query: String) {
-        _filteredProducts.value = _listProd.value.filter {
-            it.title.contains(query, ignoreCase = true)
-        }
-    }
-
-    fun sortProducts(sortOption: com.example.giftshopsunmulapp.View.SortOption) {
-        /*_filteredProducts.value = when (sortOption) {
-            SortOption.RatingDescending -> _filteredProducts.value.sortedByDescending { it.rating }
-            SortOption.PriceAscending -> _filteredProducts.value.sortedBy { it.price }
-            SortOption.PriceDescending -> _filteredProducts.value.sortedByDescending { it.price }
-            SortOption.Popularity -> _filteredProducts.value.sortedByDescending { it.countRev }
-        }*/
-    }
-
-    private fun loadList()
-    {
+    fun filterProd(searchStr: String){
         viewModelScope.launch {
-            try
-            {
-                _listProd.value = Constants.supabase.from("products").select().decodeList<products>().sortedBy { it.title }
-                _isDataLoaded.value = true
-            }
-            catch(e: Exception)
-            {
-                Log.e("MainPageViewModel", "Error fetching data: ${e.localizedMessage}")
-            }
+            val allProd = _listProd.value.filter { it.title.contains(searchStr, true) }
+            _listProd.value = allProd
         }
     }
-    init
-    {
+    init {
         loadList()
     }
+
 }

@@ -1,9 +1,13 @@
+@file:Suppress("UNUSED_EXPRESSION")
+
 package com.example.giftshopsunmulapp.View
 
+import android.widget.Toast
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,19 +23,30 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.Colors
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.Scaffold
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.SearchBar
+import androidx.compose.material3.SearchBarDefaults
+import androidx.compose.material3.TextFieldColors
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,11 +56,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.Placeholder
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -54,10 +74,12 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.giftshopsunmulapp.R
 import com.example.giftshopsunmulapp.ViewModels.MainViewModel
+import com.example.giftshopsunmulapp.ViewModels.ProdPageVM
 import com.example.giftshopsunmulapp.ViewModels.SearchPageVM
 import com.example.giftshopsunmulapp.model.categories
 import com.example.giftshopsunmulapp.model.products
 import com.example.giftshopsunmulapp.ui.theme.blue
+import com.example.giftshopsunmulapp.ui.theme.darkBlue
 import com.example.giftshopsunmulapp.ui.theme.lightBlue
 import com.example.giftshopsunmulapp.ui.theme.lightGreen
 import com.example.giftshopsunmulapp.ui.theme.white
@@ -65,32 +87,30 @@ import com.example.giftshopsunmulapp.ui.theme.white
 
 //@Preview
 @Composable
-fun SearchPage(navHost: NavHostController, viewModel: SearchPageVM = viewModel())
+fun SearchPage(navHost: NavHostController, viewModelP: ProdPageVM = viewModel(),viewModelS: SearchPageVM = viewModel())
 {
     val userEmail = MainViewModel.PrefsHelper.getSharedPreferences().getString("user_email", null)
     println("сейчас пользователь " + userEmail)
 
-    val productsFilter by viewModel.FilteredProducts.collectAsState()
-    val products by viewModel.ListProd.collectAsState()
+    val FP by viewModelS.FoundProd.collectAsState()
+    val isDataLoaded by viewModelP.isDataLoaded.collectAsState()
 
-    val isDataLoaded by viewModel.isDataLoaded.collectAsState()
-
-
-    if (!isDataLoaded) {
+    if (!isDataLoaded)
+    {
         Box(
-            modifier = Modifier.fillMaxSize().background(white),
+            modifier = Modifier
+                .fillMaxSize()
+                .background(white),
             contentAlignment = Alignment.Center
         ) {
             CircularProgressIndicator(color = blue)
         }
-    } else {
+    }
+    else
+    {
         Box()
         {
-//            MainPageContent(
-//                navHost,
-//                categories,
-//                products,
-//                viewModel)
+            //Search(FP, onSearchResult = {filtredProd -> if ()})
             Row(modifier = Modifier.align(Alignment.BottomCenter))
             { BtNavnBarS(navHost) }
         }
@@ -98,56 +118,67 @@ fun SearchPage(navHost: NavHostController, viewModel: SearchPageVM = viewModel()
 }
 
 @Composable
-fun BtNavnBarS(navHost: NavHostController)
+fun Search(FP:List<products>, onSearchResult: (List<products>) -> Unit)
 {
-    BottomNavigation(
-        modifier = Modifier.fillMaxWidth().height(60.dp),
-        backgroundColor = blue,
-        contentColor = white,
-    ) {
-        BottomNavigationItem(
-            icon = { Icon(painterResource(R.drawable.package_search), contentDescription = null, tint = lightBlue) },
-            selected = false,
-            onClick = {  navHost.navigate("ProdPage") }
+    val searchStr = remember { mutableStateOf("") }
+    val foundProd = FP.filter { prod  ->  prod.title.contains(searchStr.value!!,ignoreCase = true) }
+
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .padding(top = 40.dp, start = 30.dp, end = 30.dp)
+        .clip(
+            RoundedCornerShape(topEnd = 20.dp, topStart = 20.dp)
         )
-        BottomNavigationItem(
-            icon = { Icon(painterResource(R.drawable.search_main), contentDescription = null,tint = lightGreen) },
-            selected = true,
-            onClick = {  navHost.navigate("SearchPage") }
-        )
-        BottomNavigationItem(
-            icon = { Icon(painterResource(R.drawable.shopping_bag), contentDescription = null,tint = lightBlue) },
-            selected = false,
-            onClick = {  /**/ }
-        )
-        BottomNavigationItem(
-            icon = { Icon(painterResource(R.drawable.shopping_basket3), contentDescription = null,tint = lightBlue) },
-            selected = false,
-            onClick = {  /**/  }
-        )
-        BottomNavigationItem(
-            icon = { Icon(painterResource(R.drawable.user), contentDescription = null,tint = lightBlue) },
-            selected = false,
-            onClick = {  /**/  }
+        .background(lightBlue),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
+    )
+    {
+        TextField(value = searchStr.value, onValueChange = { text -> searchStr.value = text},
+            placeholder = {
+                Text(
+                    text = "Поиск...",
+                    color = blue,
+                    fontSize = 20.sp,
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.ExtraBold
+                )
+            },
+            colors = TextFieldDefaults.colors
+                (
+                unfocusedContainerColor = lightBlue,
+                focusedContainerColor = lightBlue,
+                unfocusedIndicatorColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent
+            ),
+            textStyle = TextStyle(
+                fontSize = 20.sp,
+                color = blue,
+                fontWeight = FontWeight.ExtraBold,
+                fontFamily = MaterialTheme.typography.bodyLarge.fontFamily),
+            leadingIcon =
+            {
+                Icon(
+                    painter = painterResource(id = R.drawable.search),
+                    contentDescription = "",
+                    tint = blue,
+                    modifier = Modifier.clickable {
+
+                    }
+                )
+            }
         )
     }
 }
 
 @Composable
-fun MainPageContent(navHost: NavHostController, categories: List<categories>, products: List<products>,
- viewModel: SearchPageVM = viewModel())
+fun MainPageContent(navHost: NavHostController, FP: List<products>, viewModelP: ProdPageVM)
 {
-
-
     Column(modifier = Modifier
         .fillMaxSize()
         .background(color = white)
     )
     {
-        SearchAndSortBar(
-            onSearch = { query -> viewModel.filterProducts(query) },
-            onSort = { sortOption -> viewModel.sortProducts(sortOption) }
-        )
         Column( modifier = Modifier
             .background(color = white)
             .padding(top = 10.dp, start = 15.dp)
@@ -164,7 +195,7 @@ fun MainPageContent(navHost: NavHostController, categories: List<categories>, pr
                     modifier = Modifier.padding(8.dp)
                 )
                 {
-                    items(products) { prod ->
+                    items(FP) { prod ->
                         Column(horizontalAlignment = Alignment.Start,
                             modifier = Modifier.width(180.dp)) {
                             Box(
@@ -245,7 +276,7 @@ fun MainPageContent(navHost: NavHostController, categories: List<categories>, pr
                                 )
                                 Spacer(modifier = Modifier.height(10.dp))
                                 Text(
-                                    text = "${prod.rating} – ${viewModel.getRevCount(prod.countRev)}",
+                                    text = "${prod.rating} – ${viewModelP.getRevCount(prod.countRev)}",
                                     fontSize = 15.sp,
                                     style = MaterialTheme.typography.bodyLarge,
                                     color = blue,
@@ -260,113 +291,45 @@ fun MainPageContent(navHost: NavHostController, categories: List<categories>, pr
     }
 }
 
-enum class SortOption {
-    RatingDescending,
-    PriceAscending,
-    PriceDescending,
-    Popularity
-}
-
 @Composable
-fun SearchAndSortBar(
-    onSearch: (String) -> Unit,
-    onSort: (SortOption) -> Unit
-) {
-    var searchText by remember { mutableStateOf("") }
-    var expanded by remember { mutableStateOf(false) }
-    var selectedSort by remember { mutableStateOf(SortOption.Popularity) }
-
-    Box(
+fun BtNavnBarS(navHost: NavHostController)
+{
+    BottomNavigation(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
-            .clip(RoundedCornerShape(10.dp))
-            .background(color = lightBlue)
-            .padding(8.dp)
+            .height(60.dp),
+        backgroundColor = blue,
+        contentColor = white,
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            // Поисковая строка
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.weight(1f)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Search,
-                    contentDescription = "Search Icon",
-                    tint = blue,
-                    modifier = Modifier.size(24.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                TextField(
-                    value = searchText,
-                    onValueChange = {
-                        searchText = it
-                        onSearch(it) // Вызываем обработчик поиска
-                    },
-                    placeholder = { Text("Поиск", color = blue) },
-                    colors = TextFieldDefaults.textFieldColors(
-                        backgroundColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        cursorColor = blue
-                    ),
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-
-            Spacer(modifier = Modifier.width(8.dp))
-
-            // Сортировка
-            Box {
-                IconButton(onClick = { expanded = true }) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.search_main), // Ваша иконка сортировки
-                        contentDescription = "Sort Icon",
-                        tint = blue
-                    )
-                }
-
-                DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false }
-                ) {
-                    DropdownMenuItem(onClick = {
-                        selectedSort = SortOption.RatingDescending
-                        onSort(selectedSort)
-                        expanded = false
-                    }) {
-                        Text("По рейтингу (убыв.)")
-                    }
-                    DropdownMenuItem(onClick = {
-                        selectedSort = SortOption.PriceAscending
-                        onSort(selectedSort)
-                        expanded = false
-                    }) {
-                        Text("По цене (возраст.)")
-                    }
-                    DropdownMenuItem(onClick = {
-                        selectedSort = SortOption.PriceDescending
-                        onSort(selectedSort)
-                        expanded = false
-                    }) {
-                        Text("По цене (убыв.)")
-                    }
-                    DropdownMenuItem(onClick = {
-                        selectedSort = SortOption.Popularity
-                        onSort(selectedSort)
-                        expanded = false
-                    }) {
-                        Text("Популярные (отзыв.)")
-                    }
-                }
-            }
-        }
+        BottomNavigationItem(
+            icon = { Icon(painterResource(R.drawable.package_search), contentDescription = null, tint = lightBlue) },
+            selected = false,
+            onClick = {  navHost.navigate("ProdPage") }
+        )
+        BottomNavigationItem(
+            icon = { Icon(painterResource(R.drawable.search_main), contentDescription = null,tint = lightGreen) },
+            selected = true,
+            onClick = {  navHost.navigate("SearchPage") }
+        )
+        BottomNavigationItem(
+            icon = { Icon(painterResource(R.drawable.shopping_bag), contentDescription = null,tint = lightBlue) },
+            selected = false,
+            onClick = {  /**/ }
+        )
+        BottomNavigationItem(
+            icon = { Icon(painterResource(R.drawable.shopping_basket3), contentDescription = null,tint = lightBlue) },
+            selected = false,
+            onClick = {  /**/  }
+        )
+        BottomNavigationItem(
+            icon = { Icon(painterResource(R.drawable.user), contentDescription = null,tint = lightBlue) },
+            selected = false,
+            onClick = {  /**/  }
+        )
     }
 }
+
+
 
 
 

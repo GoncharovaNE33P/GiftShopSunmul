@@ -1,12 +1,7 @@
 package com.example.giftshopsunmulapp.View
 
-import android.widget.Toast
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -22,7 +17,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Snackbar
-import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -170,7 +164,8 @@ fun Avtorization(navHost: NavHostController, viewModel: AvtorizationVM = viewMod
                     flag.value = result
                     if (flag.value)
                     {
-                        navHost.navigate("ProdPage")
+                       // navHost.navigate("ProdPage")
+                        navHost.navigate("SearchPage")
                     }
                     else
                     {

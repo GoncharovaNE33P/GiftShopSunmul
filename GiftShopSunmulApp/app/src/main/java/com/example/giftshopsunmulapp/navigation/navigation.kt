@@ -49,6 +49,6 @@ fun Navigation(viewModel: MainViewModel, context: Context)
         { ProdPage(navController, ProdPageVM())}
 
         composable("SearchPage")
-        { SearchPage(navController, SearchPageVM())}
+        { SearchPage(navController, ProdPageVM(),SearchPageVM())}
     }
 }
