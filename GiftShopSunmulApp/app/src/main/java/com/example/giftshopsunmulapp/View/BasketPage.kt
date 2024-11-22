@@ -1,55 +1,74 @@
-@file:Suppress("UNUSED_EXPRESSION")
-
 package com.example.giftshopsunmulapp.View
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.BottomNavigation
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.giftshopsunmulapp.R
 import com.example.giftshopsunmulapp.ViewModels.MainViewModel
-import com.example.giftshopsunmulapp.ViewModels.SearchPageVM
 import com.example.giftshopsunmulapp.model.products
 import com.example.giftshopsunmulapp.ui.theme.blue
 import com.example.giftshopsunmulapp.ui.theme.lightBlue
 import com.example.giftshopsunmulapp.ui.theme.lightGreen
 import com.example.giftshopsunmulapp.ui.theme.white
+import kotlinx.coroutines.launch
 
 
+//@Preview
 @Composable
-fun SearchPage(navHost: NavHostController, viewModel: SearchPageVM = viewModel())
+fun BasketPage(navHost: NavHostController, viewModel: MainViewModel)
 {
-    val userEmail = MainViewModel.PrefsHelper.getSharedPreferences().getString("user_email", null)
-    println("сейчас пользователь " + userEmail)
-
-    val FP by viewModel.FoundProd.collectAsState()
-    val filteredProducts = remember { mutableStateOf<List<products>?>(null) }
+    val products by viewModel.ListProd.collectAsState()
     val isDataLoaded by viewModel.isDataLoaded.collectAsState()
 
     if (!isDataLoaded)
     {
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(white),
+            modifier = Modifier.fillMaxSize().background(white),
             contentAlignment = Alignment.Center
         ) {
             CircularProgressIndicator(color = blue)
@@ -59,104 +78,130 @@ fun SearchPage(navHost: NavHostController, viewModel: SearchPageVM = viewModel()
     {
         Box()
         {
-            /*Search(FP = FP) { filtredProd ->
-                filteredProducts.value = filtredProd
-            }
-
-            // Отображение результата
-            if (filteredProducts.value == null) {
-                // Пока ничего не введено, ничего не отображаем
-            } else if (filteredProducts.value!!.isNotEmpty()) {
-                MainPageContent(navHost, filteredProducts.value!!, viewModelP)
-            } else {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "Ничего не найдено",
-                        color = blue,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-            }
-*/
+            MainPageContentBP(navHost,products,viewModel)
         }
     }
     Box()
     {
         Row(modifier = Modifier.align(Alignment.BottomCenter))
-        { viewModel.BtNavnBarS(navHost) }
-    }
-}
-
-/*@Composable
-fun Search(FP:List<products>, onSearchResult: (List<products>) -> Unit)
-{
-    val searchStr = remember { mutableStateOf("") }
-    val foundProd = FP.filter { prod  ->  prod.title.contains(searchStr.value!!,ignoreCase = true) }
-
-    onSearchResult(foundProd)
-
-    Column(modifier = Modifier
-        .fillMaxWidth()
-        .padding(top = 40.dp, start = 30.dp, end = 30.dp)
-        .clip(
-            RoundedCornerShape(topEnd = 20.dp, topStart = 20.dp)
-        )
-        .background(lightBlue),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
-    )
-    {
-        TextField(value = searchStr.value, onValueChange = { text -> searchStr.value = text},
-            placeholder = {
-                Text(
-                    text = "Поиск...",
-                    color = blue,
-                    fontSize = 20.sp,
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.ExtraBold
-                )
-            },
-            colors = TextFieldDefaults.colors
-                (
-                unfocusedContainerColor = lightBlue,
-                focusedContainerColor = lightBlue,
-                unfocusedIndicatorColor = Color.Transparent,
-                focusedIndicatorColor = Color.Transparent
-            ),
-            textStyle = TextStyle(
-                fontSize = 20.sp,
-                color = blue,
-                fontWeight = FontWeight.ExtraBold,
-                fontFamily = MaterialTheme.typography.bodyLarge.fontFamily),
-            leadingIcon =
-            {
-                Icon(
-                    painter = painterResource(id = R.drawable.searchbar),
-                    contentDescription = "",
-                    tint = blue,
-                    modifier = Modifier.clickable {
-
-                    }
-                )
-            }
-        )
+        { viewModel.BtNavnBarB(navHost) }
     }
 }
 
 @Composable
-fun MainPageContent(navHost: NavHostController, FP: List<products>, viewModelP: ProdPageVM)
+fun MainPageContentBP(navHost: NavHostController,products: List<products>,viewModel: MainViewModel)
 {
     Column(modifier = Modifier
         .fillMaxSize()
         .background(color = white)
     )
     {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(130.dp)
+        )
+        {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth().height(85.dp)
+                    .background(lightBlue)
+            )
+            {
+                Column(modifier = Modifier.padding(top = 40.dp).align(Alignment.CenterHorizontally))
+                {
+                    Text(
+                        text = "Корзина",
+                        fontSize = 25.sp,
+                        fontWeight = FontWeight.W900,
+                        color = blue,
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
+                }
+            }
+            Row(modifier = Modifier.fillMaxWidth().background(lightGreen).height(3.dp)) {  }
+            Column(modifier = Modifier
+                .background(white)
+                .clip(RoundedCornerShape(bottomEnd = 5.dp, bottomStart = 5.dp)) )
+            {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth().height(40.dp)
+                        .background(lightBlue)
+                        .align(Alignment.CenterHorizontally)
+                )
+                {
+                    Row(modifier = Modifier.padding(horizontal = 20.dp), verticalAlignment = Alignment.CenterVertically)
+                    {
+                        Column(
+                            modifier = Modifier
+                                .background(color = Color.Transparent)
+                                .size(25.dp)
+                        )
+                        {
+                            IconButton(onClick = { })
+                            {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.arrow_down_wide_narrow),
+                                    contentDescription = "",
+                                    modifier = Modifier.size(25.dp),
+                                    tint = blue,
+                                )
+                            }
+                        }
+                        Button(
+                            onClick = {},
+                            colors = ButtonDefaults.buttonColors(
+                                contentColor = blue,
+                                containerColor = Color.Transparent
+                            )
+                        )
+                        {
+                            Text(
+                                "Курьер: ул. ..., д. ...",
+                                fontSize = 20.sp,
+                                style = MaterialTheme.typography.bodyLarge,
+                                fontWeight = FontWeight.W900,
+                                color = blue,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
+                    }
+                }
+            }
+        }
+        Spacer(modifier = Modifier.height(30.dp))
+        Column(modifier = Modifier.align(Alignment.CenterHorizontally))
+        {
+            Text(
+                text = "Корзина пуста",
+                fontSize = 25.sp,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.W900,
+                color = blue
+            )
+        }
+        Spacer(modifier = Modifier.height(30.dp))
+        Button(
+            onClick = {},
+            modifier = Modifier.width(280.dp).height(50.dp).align(Alignment.CenterHorizontally),
+            shape = RoundedCornerShape(5.dp),
+            colors = ButtonDefaults.buttonColors(
+                contentColor = blue,
+                containerColor = lightGreen
+            )
+        )
+        {
+            Text(
+                "Приступить к покупкам",
+                fontSize = 15.sp,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.W900,
+                color = blue
+            )
+        }
+        Spacer(modifier = Modifier.height(30.dp))
         Column( modifier = Modifier
             .background(color = white)
             .padding(top = 10.dp, start = 15.dp)
@@ -173,7 +218,7 @@ fun MainPageContent(navHost: NavHostController, FP: List<products>, viewModelP: 
                     modifier = Modifier.padding(8.dp)
                 )
                 {
-                    items(FP) { prod ->
+                    items(products) { prod ->
                         Column(horizontalAlignment = Alignment.Start,
                             modifier = Modifier.width(180.dp)) {
                             Box(
@@ -194,7 +239,9 @@ fun MainPageContent(navHost: NavHostController, FP: List<products>, viewModelP: 
                                         .build(),
                                     contentDescription = "",
                                     contentScale = ContentScale.Fit,
-                                    modifier = Modifier.fillMaxSize()
+                                    modifier = Modifier.fillMaxSize().clickable {
+                                        navHost.navigate("ProdCardPage/${prod.id}")
+                                    }
                                 )
                             }
                             Spacer(modifier = Modifier.height(10.dp))
@@ -224,7 +271,7 @@ fun MainPageContent(navHost: NavHostController, FP: List<products>, viewModelP: 
                                         IconButton(onClick = {  })
                                         {
                                             Icon(
-                                                painter = painterResource(id = R.drawable.shopping_basket1),
+                                                painter = painterResource(id = R.drawable.shopping_basket_prod_page),
                                                 contentDescription = "",
                                                 modifier = Modifier.size(20.dp),
                                                 tint = lightGreen,
@@ -254,7 +301,7 @@ fun MainPageContent(navHost: NavHostController, FP: List<products>, viewModelP: 
                                 )
                                 Spacer(modifier = Modifier.height(10.dp))
                                 Text(
-                                    text = "${prod.rating} – ${viewModelP.getRevCount(prod.countRev)}",
+                                    text = "${prod.rating} – ${viewModel.getRevCount(prod.countRev)}",
                                     fontSize = 15.sp,
                                     style = MaterialTheme.typography.bodyLarge,
                                     color = blue,
@@ -267,4 +314,4 @@ fun MainPageContent(navHost: NavHostController, FP: List<products>, viewModelP: 
             }
         }
     }
-}*/
+}

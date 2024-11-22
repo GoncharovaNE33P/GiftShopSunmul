@@ -4,7 +4,6 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,10 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.BottomNavigation
 //noinspection UsingMaterialAndMaterial3Libraries
@@ -48,30 +44,27 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.giftshopsunmulapp.R
 import com.example.giftshopsunmulapp.ViewModels.MainViewModel
-import com.example.giftshopsunmulapp.ViewModels.ProdCardPageVM
 import com.example.giftshopsunmulapp.model.products
 import com.example.giftshopsunmulapp.ui.theme.blue
-import com.example.giftshopsunmulapp.ui.theme.darkBlue
 import com.example.giftshopsunmulapp.ui.theme.lightBlue
 import com.example.giftshopsunmulapp.ui.theme.lightGreen
 import com.example.giftshopsunmulapp.ui.theme.white
-import kotlinx.coroutines.launch
 
 
 //@Preview
 @Composable
-fun ProdCardPage(navHost: NavHostController, viewModel: ProdCardPageVM, prodId:String?)
+fun ProdCardPage(navHost: NavHostController, viewModel: MainViewModel, prodId:String?)
 {
     val listProd by viewModel.ListProd.collectAsState()
     val isDataLoaded by viewModel.isDataLoaded.collectAsState()
 
-    if (!isDataLoaded) {
+    if (!isDataLoaded)
+    {
         Box(
             modifier = Modifier.fillMaxSize().background(white),
             contentAlignment = Alignment.Center
@@ -79,24 +72,28 @@ fun ProdCardPage(navHost: NavHostController, viewModel: ProdCardPageVM, prodId:S
             CircularProgressIndicator(color = blue)
         }
     }
-    else {
+    else
+    {
         Box()
         {
-            PageContent(navHost,prodId,listProd)
-            Row(modifier = Modifier.align(Alignment.BottomCenter))
-            { BtNavnBarC(navHost) }
+            MainPageContentPCP(navHost,prodId,listProd)
         }
+    }
+    Box()
+    {
+        Row(modifier = Modifier.align(Alignment.BottomCenter))
+        { BtNavnBarC(navHost) }
     }
 }
 
 @Composable
-fun PageContent(navHost: NavHostController, prodId:String?,listProd:List<products>)
+fun MainPageContentPCP(navHost: NavHostController, prodId:String?,listProd:List<products>)
 {
     val prod = listProd.find { it.id == prodId }!!
 
     Column(modifier = Modifier
-        .fillMaxSize()
         .background(color = white)
+        .fillMaxSize()
     )
     {
         Column( modifier = Modifier.padding(start = 20.dp, bottom = 10.dp, top = 30.dp),
@@ -121,209 +118,218 @@ fun PageContent(navHost: NavHostController, prodId:String?,listProd:List<product
                 }
             }
         }
-        Column(modifier = Modifier
-            .padding(start = 20.dp, bottom = 10.dp, end = 20.dp)
-            .background(white)
-            .clip(RoundedCornerShape(10.dp))
-        )
+        LazyColumn(modifier = Modifier.padding(bottom = 110.dp))
         {
-            Column( modifier = Modifier
-                .background(blue).fillMaxWidth().height(350.dp),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.Start
-            )
-            {
-                Spacer(modifier = Modifier.height(20.dp))
-                Box(
-                     modifier = Modifier
-                         .fillMaxWidth()
-                         .padding(horizontal = 20.dp)
-                         .clip(RoundedCornerShape(10.dp))
-                         .background(white)
-                         .height(200.dp),
-                     contentAlignment = Alignment.Center
+            item {
+                Column(modifier = Modifier
+                    .padding(start = 20.dp, bottom = 10.dp, end = 20.dp)
+                    .background(white)
+                    .clip(RoundedCornerShape(10.dp))
                 )
                 {
-                    AsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data(prod.image)
-                            .crossfade(true)
-                            .build(),
-                        contentDescription = "",
-                        contentScale = ContentScale.Fit,
-                        modifier = Modifier.fillMaxSize()
+                    Column( modifier = Modifier
+                        .background(blue).fillMaxWidth().height(350.dp),
+                        verticalArrangement = Arrangement.Top,
+                        horizontalAlignment = Alignment.Start
                     )
-                }
-                Spacer(modifier = Modifier.height(10.dp))
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 20.dp)
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically)
                     {
-                        Text(
-                            text = "${prod.price} ₽",
-                            fontSize = 25.sp,
-                            fontWeight = FontWeight.ExtraBold,
-                            color = lightGreen,
-                            style = MaterialTheme.typography.bodyLarge,
+                        Spacer(modifier = Modifier.height(20.dp))
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 20.dp)
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(white)
+                                .height(200.dp),
+                            contentAlignment = Alignment.Center
                         )
-                        Spacer(modifier = Modifier.width(160.dp))
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.star),
-                                contentDescription = "Рейтинг",
-                                tint = lightGreen,
-                                modifier = Modifier.size(30.dp)
+                        {
+                            AsyncImage(
+                                model = ImageRequest.Builder(LocalContext.current)
+                                    .data(prod.image)
+                                    .crossfade(true)
+                                    .build(),
+                                contentDescription = "",
+                                contentScale = ContentScale.Fit,
+                                modifier = Modifier.fillMaxSize()
                             )
-                            Spacer(modifier = Modifier.width(10.dp))
+                        }
+                        Spacer(modifier = Modifier.height(10.dp))
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 20.dp)
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically)
+                            {
+                                Text(
+                                    text = "${prod.price} ₽",
+                                    fontSize = 25.sp,
+                                    fontWeight = FontWeight.ExtraBold,
+                                    color = lightGreen,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                )
+                                Spacer(modifier = Modifier.width(160.dp))
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.star),
+                                        contentDescription = "Рейтинг",
+                                        tint = lightGreen,
+                                        modifier = Modifier.size(30.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(10.dp))
+                                    Text(
+                                        text = "${prod.rating}",
+                                        fontSize = 25.sp,
+                                        color = lightGreen,
+                                        fontWeight = FontWeight.ExtraBold,
+                                        style = MaterialTheme.typography.bodyLarge,
+                                    )
+                                }
+                            }
+                            Spacer(modifier = Modifier.height(10.dp))
                             Text(
-                                text = "${prod.rating}",
-                                fontSize = 25.sp,
-                                color = lightGreen,
+                                text = prod.title,
+                                fontSize = 20.sp,
                                 fontWeight = FontWeight.ExtraBold,
+                                color = lightGreen,
                                 style = MaterialTheme.typography.bodyLarge,
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis
                             )
                         }
                     }
-                    Spacer(modifier = Modifier.height(10.dp))
-                    Text(
-                        text = prod.title,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.ExtraBold,
-                        color = lightGreen,
-                        style = MaterialTheme.typography.bodyLarge,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis
-                    )
                 }
             }
-        }
-
-        Spacer(modifier = Modifier.height(5.dp))
-
-        Row(modifier = Modifier.background(white)
-            .padding(horizontal = 20.dp)
-            .clip(RoundedCornerShape(10.dp))
-        )
-        {
-            Column( modifier = Modifier
-                    .fillMaxWidth().height(85.dp)
-                    .background(lightGreen)
-                    .padding(horizontal = 15.dp)
-            )
-            {
-                Spacer(modifier = Modifier.height(10.dp))
-                Row(verticalAlignment = Alignment.CenterVertically)
-                {
-                    Text(
-                        text = prod.categories!!.title,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.ExtraBold,
-                        color = blue,
-                        style = MaterialTheme.typography.bodyLarge,
-                    )
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Text(
-                        text = prod.prodStatus!!.title,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.ExtraBold,
-                        color = blue,
-                        style = MaterialTheme.typography.bodyLarge,
-                    )
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Text(
-                        text = "Отзывы: ${prod.countRev}",
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(5.dp))
-                            .background(lightBlue)
-                            .padding(5.dp),
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.ExtraBold,
-                        color = blue,
-                        style = MaterialTheme.typography.bodyLarge,
-                    )
-                }
-                Spacer(modifier = Modifier.height(10.dp))
-                Column( modifier = Modifier.fillMaxWidth()
-                    .clip(RoundedCornerShape(5.dp)),
-                    horizontalAlignment = Alignment.CenterHorizontally
+            item {
+                Spacer(modifier = Modifier.height(5.dp))
+                Row(
+                    modifier = Modifier.background(white)
+                        .padding(horizontal = 20.dp)
+                        .clip(RoundedCornerShape(10.dp))
                 )
                 {
-                    Button(
-                        onClick = {  },
-                        modifier = Modifier.fillMaxWidth().height(30.dp),
-                        shape = RoundedCornerShape(5.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            backgroundColor = lightBlue,
-
-                        )
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth().height(85.dp)
+                            .background(lightGreen)
+                            .padding(horizontal = 15.dp)
                     )
                     {
-                        Text(
-                            "Купить",
-                            fontSize = 12.sp,
-                            style = MaterialTheme.typography.bodyLarge,
-                            fontWeight = FontWeight.ExtraBold,
-                            color = blue
+                        Spacer(modifier = Modifier.height(10.dp))
+                        Row(verticalAlignment = Alignment.CenterVertically)
+                        {
+                            Text(
+                                text = prod.categories!!.title,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.ExtraBold,
+                                color = blue,
+                                style = MaterialTheme.typography.bodyLarge,
+                            )
+                            Spacer(modifier = Modifier.width(10.dp))
+                            Text(
+                                text = prod.prodStatus!!.title,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.ExtraBold,
+                                color = blue,
+                                style = MaterialTheme.typography.bodyLarge,
+                            )
+                            Spacer(modifier = Modifier.width(10.dp))
+                            Text(
+                                text = "Отзывы: ${prod.countRev}",
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(5.dp))
+                                    .background(lightBlue)
+                                    .padding(5.dp),
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.ExtraBold,
+                                color = blue,
+                                style = MaterialTheme.typography.bodyLarge,
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(10.dp))
+                        Column(
+                            modifier = Modifier.fillMaxWidth()
+                                .clip(RoundedCornerShape(5.dp)),
+                            horizontalAlignment = Alignment.CenterHorizontally
                         )
+                        {
+                            Button(
+                                onClick = { },
+                                modifier = Modifier.fillMaxWidth().height(30.dp),
+                                shape = RoundedCornerShape(5.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    backgroundColor = lightBlue,
+
+                                    )
+                            )
+                            {
+                                Text(
+                                    "Купить",
+                                    fontSize = 12.sp,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    fontWeight = FontWeight.ExtraBold,
+                                    color = blue
+                                )
+                            }
+                        }
                     }
                 }
             }
-        }
-
-        Spacer(modifier = Modifier.height(10.dp))
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp)
-                .border(BorderStroke(2.dp, lightBlue), shape = RoundedCornerShape(10.dp)),
-            shape = RoundedCornerShape(10.dp)
-
-        ) {
-            Column(modifier = Modifier.padding(16.dp)) {
-                Text(
-                    text = "Характеристики",
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.W900,
-                    color = blue
-                )
+            item{
                 Spacer(modifier = Modifier.height(10.dp))
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp)
+                        .border(BorderStroke(2.dp, lightBlue), shape = RoundedCornerShape(10.dp)),
+                    shape = RoundedCornerShape(10.dp)
 
-                val characteristics = listOf(
-                    "Артикул" to prod.article.toString(),
-                    "Вес товара, гр." to prod.grams.toString(),
-                    "Страна" to (prod.country?.title ?: "Не указано"),
-                    "Признак 18+" to if (prod.sing_18) "да" else "нет",
-                    "Описание" to (prod.description ?: "...")
-                )
-                characteristics.forEach{ (key, value) ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 5.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    )
-                    {
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
                         Text(
-                            text = key,
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.ExtraBold,
-                            color = blue,
+                            text = "Характеристики",
                             style = MaterialTheme.typography.bodyLarge,
-                            modifier = Modifier.weight(1f)
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.W900,
+                            color = blue
                         )
-                        Text(
-                            text = value,
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.ExtraBold,
-                            color = blue,
-                            style = MaterialTheme.typography.bodyLarge,
-                            modifier = Modifier.weight(1f),
-                            textAlign = TextAlign.Start
+                        Spacer(modifier = Modifier.height(10.dp))
+
+                        val characteristics = listOf(
+                            "Артикул" to prod.article.toString(),
+                            "Вес товара, гр." to prod.grams.toString(),
+                            "Страна" to (prod.country?.title ?: "Не указано"),
+                            "Признак 18+" to if (prod.sing_18) "да" else "нет",
+                            "Описание" to (prod.description ?: "...")
                         )
+                        characteristics.forEach{ (key, value) ->
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 5.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            )
+                            {
+                                Text(
+                                    text = key,
+                                    fontSize = 15.sp,
+                                    fontWeight = FontWeight.ExtraBold,
+                                    color = blue,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    modifier = Modifier.weight(1f)
+                                )
+                                Text(
+                                    text = value,
+                                    fontSize = 15.sp,
+                                    fontWeight = FontWeight.ExtraBold,
+                                    color = blue,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    modifier = Modifier.weight(1f),
+                                    textAlign = TextAlign.Start
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -334,36 +340,57 @@ fun PageContent(navHost: NavHostController, prodId:String?,listProd:List<product
 @Composable
 fun BtNavnBarC(navHost: NavHostController)
 {
-    BottomNavigation(
-        modifier = Modifier.fillMaxWidth().height(60.dp),
-        backgroundColor = blue,
-        contentColor = white,
-    ) {
-        BottomNavigationItem(
-            icon = { Icon(painterResource(R.drawable.package_search_main), contentDescription = null, tint = lightGreen) },
-            selected = true,
-            onClick = {  navHost.navigate("ProdPage") }
-        )
-        BottomNavigationItem(
-            icon = { Icon(painterResource(R.drawable.search), contentDescription = null,tint = lightBlue) },
-            selected = false,
-            onClick = {  navHost.navigate("SearchPage") }
-        )
-        BottomNavigationItem(
-            icon = { Icon(painterResource(R.drawable.shopping_bag), contentDescription = null,tint = lightBlue) },
-            selected = false,
-            onClick = {  /**/ }
-        )
-        BottomNavigationItem(
-            icon = { Icon(painterResource(R.drawable.shopping_basket3), contentDescription = null,tint = lightBlue) },
-            selected = false,
-            onClick = {  /**/  }
-        )
-        BottomNavigationItem(
-            icon = { Icon(painterResource(R.drawable.user), contentDescription = null,tint = lightBlue) },
-            selected = false,
-            onClick = {  /**/  }
-        )
+    Column()
+    {
+        Button(
+            onClick = {},
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp),
+            shape = RoundedCornerShape(topEnd = 15.dp, topStart = 15.dp),
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = lightGreen
+            )
+        ) {
+            Text(
+                text = "В корзину",
+                style = MaterialTheme.typography.bodyLarge,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.W900,
+                color = blue
+            )
+        }
+        BottomNavigation(
+            modifier = Modifier.fillMaxWidth().height(60.dp),
+            backgroundColor = blue,
+            contentColor = white,
+        ) {
+            BottomNavigationItem(
+                icon = { Icon(painterResource(R.drawable.package_search_main), contentDescription = null, tint = lightGreen) },
+                selected = true,
+                onClick = {  navHost.navigate("ProdPage") }
+            )
+            BottomNavigationItem(
+                icon = { Icon(painterResource(R.drawable.search), contentDescription = null,tint = lightBlue) },
+                selected = false,
+                onClick = {  navHost.navigate("SearchPage") }
+            )
+            BottomNavigationItem(
+                icon = { Icon(painterResource(R.drawable.shopping_bag), contentDescription = null,tint = lightBlue) },
+                selected = false,
+                onClick = {  /**/ }
+            )
+            BottomNavigationItem(
+                icon = { Icon(painterResource(R.drawable.shopping_basket), contentDescription = null,tint = lightBlue) },
+                selected = false,
+                onClick = {  /**/  }
+            )
+            BottomNavigationItem(
+                icon = { Icon(painterResource(R.drawable.user), contentDescription = null,tint = lightBlue) },
+                selected = false,
+                onClick = {  /**/  }
+            )
+        }
     }
 }
 

@@ -11,15 +11,17 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.giftshopsunmulapp.View.Avtorization
+import com.example.giftshopsunmulapp.View.BasketPage
 import com.example.giftshopsunmulapp.View.MainPage
+import com.example.giftshopsunmulapp.View.OrdersPage
 import com.example.giftshopsunmulapp.View.ProdCardPage
 import com.example.giftshopsunmulapp.View.ProdPage
+import com.example.giftshopsunmulapp.View.ProdUnderCategory
 import com.example.giftshopsunmulapp.View.Registration
 import com.example.giftshopsunmulapp.View.SearchPage
+import com.example.giftshopsunmulapp.View.UserPage
 import com.example.giftshopsunmulapp.ViewModels.AvtorizationVM
 import com.example.giftshopsunmulapp.ViewModels.MainViewModel
-import com.example.giftshopsunmulapp.ViewModels.ProdCardPageVM
-import com.example.giftshopsunmulapp.ViewModels.ProdPageVM
 import com.example.giftshopsunmulapp.ViewModels.RegistrationVM
 import com.example.giftshopsunmulapp.ViewModels.SearchPageVM
 
@@ -50,10 +52,19 @@ fun Navigation(viewModel: MainViewModel, context: Context)
         { Registration(navController, RegistrationVM())}
 
         composable("ProdPage")
-        { ProdPage(navController, ProdPageVM())}
+        { ProdPage(navController, MainViewModel())}
 
         composable("SearchPage")
-        { SearchPage(navController, ProdPageVM(),SearchPageVM())}
+        { SearchPage(navController, SearchPageVM())}
+
+        composable("OrdersPage")
+        { OrdersPage(navController, MainViewModel())}
+
+        composable("BasketPage")
+        { BasketPage(navController, MainViewModel())}
+
+        composable("UserPage")
+        { UserPage(navController, MainViewModel())}
 
         composable(
             "ProdCardPage/{prod.id}",
@@ -63,7 +74,18 @@ fun Navigation(viewModel: MainViewModel, context: Context)
                 }
             )
         ){backStackEntry ->
-            ProdCardPage(navController, ProdCardPageVM(), backStackEntry.arguments?.getString("prod.id"))
+            ProdCardPage(navController, MainViewModel(), backStackEntry.arguments?.getString("prod.id"))
+        }
+
+        composable(
+            "ProdUnderCategory/{categ.id}",
+            arguments = listOf(
+                navArgument(name = "categ.id"){
+                    type = NavType.StringType
+                }
+            )
+        ){backStackEntry ->
+            ProdUnderCategory(navController, MainViewModel(), backStackEntry.arguments?.getString("categ.id"))
         }
     }
 }

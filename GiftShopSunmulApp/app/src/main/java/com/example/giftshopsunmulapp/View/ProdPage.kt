@@ -49,7 +49,6 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.giftshopsunmulapp.R
 import com.example.giftshopsunmulapp.ViewModels.MainViewModel
-import com.example.giftshopsunmulapp.ViewModels.ProdPageVM
 import com.example.giftshopsunmulapp.model.categories
 import com.example.giftshopsunmulapp.model.products
 import com.example.giftshopsunmulapp.ui.theme.blue
@@ -58,10 +57,8 @@ import com.example.giftshopsunmulapp.ui.theme.lightBlue
 import com.example.giftshopsunmulapp.ui.theme.lightGreen
 import com.example.giftshopsunmulapp.ui.theme.white
 
-
-//@Preview
 @Composable
-fun ProdPage(navHost: NavHostController, viewModel: ProdPageVM = viewModel())
+fun ProdPage(navHost: NavHostController, viewModel: MainViewModel)
 {
     val userEmail = MainViewModel.PrefsHelper.getSharedPreferences().getString("user_email", null)
     println("сейчас пользователь " + userEmail)
@@ -71,66 +68,36 @@ fun ProdPage(navHost: NavHostController, viewModel: ProdPageVM = viewModel())
 
     val isDataLoaded by viewModel.isDataLoaded.collectAsState()
 
-    if (!isDataLoaded) {
+    if (!isDataLoaded)
+    {
         Box(
             modifier = Modifier.fillMaxSize().background(white),
             contentAlignment = Alignment.Center
         ) {
             CircularProgressIndicator(color = blue)
         }
-    } else {
+    } else
+    {
         Box()
         {
-            MainPageContent(
+            MainPageContentPP(
                 navHost,
                 categories,
                 products,
                 viewModel)
-            Row(modifier = Modifier.align(Alignment.BottomCenter))
-            { BtNavnBarP(navHost) }
         }
     }
-}
-
-@Composable
-fun BtNavnBarP(navHost: NavHostController)
-{
-    BottomNavigation(
-        modifier = Modifier.fillMaxWidth().height(60.dp),
-        backgroundColor = blue,
-        contentColor = white,
-    ) {
-        BottomNavigationItem(
-            icon = { Icon(painterResource(R.drawable.package_search_main), contentDescription = null, tint = lightGreen) },
-            selected = true,
-            onClick = {  navHost.navigate("ProdPage") }
-        )
-        BottomNavigationItem(
-            icon = { Icon(painterResource(R.drawable.search), contentDescription = null,tint = lightBlue) },
-            selected = false,
-            onClick = {  navHost.navigate("SearchPage") }
-        )
-        BottomNavigationItem(
-            icon = { Icon(painterResource(R.drawable.shopping_bag), contentDescription = null,tint = lightBlue) },
-            selected = false,
-            onClick = {  /**/ }
-        )
-        BottomNavigationItem(
-            icon = { Icon(painterResource(R.drawable.shopping_basket3), contentDescription = null,tint = lightBlue) },
-            selected = false,
-            onClick = {  /**/  }
-        )
-        BottomNavigationItem(
-            icon = { Icon(painterResource(R.drawable.user), contentDescription = null,tint = lightBlue) },
-            selected = false,
-            onClick = {  /**/  }
-        )
+    Box()
+    {
+        Row(modifier = Modifier.align(Alignment.BottomCenter))
+        { viewModel.BtNavnBarP(navHost) }
     }
 }
 
 @Composable
-fun MainPageContent(navHost: NavHostController,categories: List<categories>, products: List<products>,
- viewModel: ProdPageVM = viewModel())
+fun MainPageContentPP(navHost: NavHostController,categories: List<categories>, products: List<products>,
+ viewModel: MainViewModel = viewModel()
+)
 {
     val filteredProducts = products.filter { it.rating >= 4.5 }
     val categoryMapping = mapOf(
@@ -197,6 +164,9 @@ fun MainPageContent(navHost: NavHostController,categories: List<categories>, pro
                                 modifier = Modifier
                                     .size(40.dp)
                                     .align(Alignment.Center)
+                                    .clickable {
+                                        navHost.navigate("ProdUnderCategory/${category.id}")
+                                    }
                             )
                         }
                         Spacer(modifier = Modifier.height(3.dp))
@@ -259,7 +229,9 @@ fun MainPageContent(navHost: NavHostController,categories: List<categories>, pro
                                         .build(),
                                     contentDescription = "",
                                     contentScale = ContentScale.Fit,
-                                    modifier = Modifier.fillMaxSize()
+                                    modifier = Modifier.fillMaxSize().clickable {
+                                        navHost.navigate("ProdCardPage/${prod.id}")
+                                    }
                                 )
                             }
                             Spacer(modifier = Modifier.height(10.dp))
@@ -298,7 +270,7 @@ fun MainPageContent(navHost: NavHostController,categories: List<categories>, pro
                                     IconButton(onClick = {  })
                                     {
                                         Icon(
-                                            painter = painterResource(id = R.drawable.shopping_basket),
+                                            painter = painterResource(id = R.drawable.shopping_basket_prod_page),
                                             contentDescription = "",
                                             modifier = Modifier.size(20.dp),
                                             tint = blue,
@@ -381,7 +353,7 @@ fun MainPageContent(navHost: NavHostController,categories: List<categories>, pro
                                         IconButton(onClick = {  })
                                         {
                                             Icon(
-                                                painter = painterResource(id = R.drawable.shopping_basket1),
+                                                painter = painterResource(id = R.drawable.shopping_basket_prod_page),
                                                 contentDescription = "",
                                                 modifier = Modifier.size(20.dp),
                                                 tint = lightGreen,

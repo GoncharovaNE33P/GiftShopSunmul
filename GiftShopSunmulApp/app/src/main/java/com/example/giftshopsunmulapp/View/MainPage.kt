@@ -55,7 +55,7 @@ fun MainPage(navHost: NavHostController)
                 })
         )
         delay(1000L)
-        navHost.navigate("Registration")
+        navHost.navigate("Avtorization")
     }
 
     Box(modifier = Modifier.fillMaxSize().background(color = white)) {
