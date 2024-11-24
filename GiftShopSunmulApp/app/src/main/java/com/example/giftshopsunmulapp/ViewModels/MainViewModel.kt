@@ -55,7 +55,7 @@ open class MainViewModel:ViewModel()
         return "https://${Constants.supabase.supabaseUrl}/storage/v1/object/public/$filePath"
     }
 
-    fun getRevCount(countRev: Int): String
+    fun getRevCount(countRev: Int?): String
     {
         var text = ""
         if (countRev == 1) { text = "отзыв" }

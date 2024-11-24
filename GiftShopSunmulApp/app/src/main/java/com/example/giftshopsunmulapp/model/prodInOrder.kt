@@ -6,5 +6,8 @@ data class prodInOrder(
     val id: String,
     val products_id: String,
     val orders_id: String,
-    val count: Int
+    val count: Int,
+
+    var products: products? = null,
+    var orders: orders? = null
 )

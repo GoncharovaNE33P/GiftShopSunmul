@@ -19,5 +19,5 @@ data class products(
 
     var country: countryProd? = null,
     var categories: categories? = null,
-    var prodStatus: productsStatus? = null,
+    var prodStatus: productsStatus? = null
 )

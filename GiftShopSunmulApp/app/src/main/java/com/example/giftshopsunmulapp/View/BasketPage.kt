@@ -49,8 +49,10 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.giftshopsunmulapp.R
+import com.example.giftshopsunmulapp.ViewModels.BasketPageVM
 import com.example.giftshopsunmulapp.ViewModels.MainViewModel
 import com.example.giftshopsunmulapp.model.products
+import com.example.giftshopsunmulapp.model.shopCart
 import com.example.giftshopsunmulapp.ui.theme.blue
 import com.example.giftshopsunmulapp.ui.theme.lightBlue
 import com.example.giftshopsunmulapp.ui.theme.lightGreen
@@ -60,9 +62,10 @@ import kotlinx.coroutines.launch
 
 //@Preview
 @Composable
-fun BasketPage(navHost: NavHostController, viewModel: MainViewModel)
+fun BasketPage(navHost: NavHostController, viewModel: BasketPageVM)
 {
     val products by viewModel.ListProd.collectAsState()
+
     val isDataLoaded by viewModel.isDataLoaded.collectAsState()
 
     if (!isDataLoaded)
@@ -89,7 +92,7 @@ fun BasketPage(navHost: NavHostController, viewModel: MainViewModel)
 }
 
 @Composable
-fun MainPageContentBP(navHost: NavHostController,products: List<products>,viewModel: MainViewModel)
+fun MainPageContentBP(navHost: NavHostController,products: List<products>,viewModel: BasketPageVM)
 {
     Column(modifier = Modifier
         .fillMaxSize()
@@ -172,6 +175,7 @@ fun MainPageContentBP(navHost: NavHostController,products: List<products>,viewMo
             }
         }
         Spacer(modifier = Modifier.height(30.dp))
+
         Column(modifier = Modifier.align(Alignment.CenterHorizontally))
         {
             Text(
@@ -201,6 +205,7 @@ fun MainPageContentBP(navHost: NavHostController,products: List<products>,viewMo
                 color = blue
             )
         }
+
         Spacer(modifier = Modifier.height(30.dp))
         Column( modifier = Modifier
             .background(color = white)

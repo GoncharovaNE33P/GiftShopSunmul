@@ -12,7 +12,9 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.giftshopsunmulapp.View.Avtorization
 import com.example.giftshopsunmulapp.View.BasketPage
+import com.example.giftshopsunmulapp.View.HistoryPage
 import com.example.giftshopsunmulapp.View.MainPage
+import com.example.giftshopsunmulapp.View.OrderRegistPage
 import com.example.giftshopsunmulapp.View.OrdersPage
 import com.example.giftshopsunmulapp.View.ProdCardPage
 import com.example.giftshopsunmulapp.View.ProdPage
@@ -21,7 +23,10 @@ import com.example.giftshopsunmulapp.View.Registration
 import com.example.giftshopsunmulapp.View.SearchPage
 import com.example.giftshopsunmulapp.View.UserPage
 import com.example.giftshopsunmulapp.ViewModels.AvtorizationVM
+import com.example.giftshopsunmulapp.ViewModels.BasketPageVM
+import com.example.giftshopsunmulapp.ViewModels.HistoryPageVM
 import com.example.giftshopsunmulapp.ViewModels.MainViewModel
+import com.example.giftshopsunmulapp.ViewModels.OrdersPageVM
 import com.example.giftshopsunmulapp.ViewModels.RegistrationVM
 import com.example.giftshopsunmulapp.ViewModels.SearchPageVM
 
@@ -58,13 +63,19 @@ fun Navigation(viewModel: MainViewModel, context: Context)
         { SearchPage(navController, SearchPageVM())}
 
         composable("OrdersPage")
-        { OrdersPage(navController, MainViewModel())}
+        { OrdersPage(navController, OrdersPageVM())}
+
+        composable("OrderRegistPage")
+        { OrderRegistPage(navController, MainViewModel())}
 
         composable("BasketPage")
-        { BasketPage(navController, MainViewModel())}
+        { BasketPage(navController, BasketPageVM())}
 
         composable("UserPage")
         { UserPage(navController, MainViewModel())}
+
+        composable("HistoryPage")
+        { HistoryPage(navController, HistoryPageVM()) }
 
         composable(
             "ProdCardPage/{prod.id}",

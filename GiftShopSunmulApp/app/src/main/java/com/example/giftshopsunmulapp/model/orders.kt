@@ -15,4 +15,10 @@ data class orders(
     val payment_methods: String,
     val delivery_methods: String,
     val delivery_address: String,
+
+    var user: user? = null,
+    var ord_status: orderStatus? = null,
+    var pay_methods: paymentMethods? = null,
+    var deliv_methods: deliveryMethods? = null,
+    var products: List<products> = emptyList()
 )
