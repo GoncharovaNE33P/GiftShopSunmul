@@ -13,5 +13,5 @@ data class reviews(
     val date_rev: String,
 
     var users: List<user>? = null,
-    var products: List<products>? = null,
+    var products: products? = null,
 )

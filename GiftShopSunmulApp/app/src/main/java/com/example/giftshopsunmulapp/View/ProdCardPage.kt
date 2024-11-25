@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -55,8 +56,6 @@ import com.example.giftshopsunmulapp.ui.theme.lightBlue
 import com.example.giftshopsunmulapp.ui.theme.lightGreen
 import com.example.giftshopsunmulapp.ui.theme.white
 
-
-//@Preview
 @Composable
 fun ProdCardPage(navHost: NavHostController, viewModel: MainViewModel, prodId:String?)
 {
@@ -240,7 +239,8 @@ fun MainPageContentPCP(navHost: NavHostController, prodId:String?,listProd:List<
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(5.dp))
                                     .background(lightBlue)
-                                    .padding(5.dp),
+                                    .padding(5.dp)
+                                    .clickable { navHost.navigate("ReviewPage/${prod.id}") },
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.ExtraBold,
                                 color = blue,

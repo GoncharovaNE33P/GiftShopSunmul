@@ -20,14 +20,17 @@ import com.example.giftshopsunmulapp.View.ProdCardPage
 import com.example.giftshopsunmulapp.View.ProdPage
 import com.example.giftshopsunmulapp.View.ProdUnderCategory
 import com.example.giftshopsunmulapp.View.Registration
+import com.example.giftshopsunmulapp.View.ReviewPage
 import com.example.giftshopsunmulapp.View.SearchPage
 import com.example.giftshopsunmulapp.View.UserPage
 import com.example.giftshopsunmulapp.ViewModels.AvtorizationVM
 import com.example.giftshopsunmulapp.ViewModels.BasketPageVM
 import com.example.giftshopsunmulapp.ViewModels.HistoryPageVM
 import com.example.giftshopsunmulapp.ViewModels.MainViewModel
+import com.example.giftshopsunmulapp.ViewModels.OrderRegistPageVM
 import com.example.giftshopsunmulapp.ViewModels.OrdersPageVM
 import com.example.giftshopsunmulapp.ViewModels.RegistrationVM
+import com.example.giftshopsunmulapp.ViewModels.ReviewPageVM
 import com.example.giftshopsunmulapp.ViewModels.SearchPageVM
 
 @Composable
@@ -66,7 +69,7 @@ fun Navigation(viewModel: MainViewModel, context: Context)
         { OrdersPage(navController, OrdersPageVM())}
 
         composable("OrderRegistPage")
-        { OrderRegistPage(navController, MainViewModel())}
+        { OrderRegistPage(navController, OrderRegistPageVM())}
 
         composable("BasketPage")
         { BasketPage(navController, BasketPageVM())}
@@ -86,6 +89,16 @@ fun Navigation(viewModel: MainViewModel, context: Context)
             )
         ){backStackEntry ->
             ProdCardPage(navController, MainViewModel(), backStackEntry.arguments?.getString("prod.id"))
+        }
+        composable(
+            "ReviewPage/{prod.id}",
+            arguments = listOf(
+                navArgument(name = "prod.id"){
+                    type = NavType.StringType
+                }
+            )
+        ){backStackEntry ->
+            ReviewPage(navController, ReviewPageVM(), backStackEntry.arguments?.getString("prod.id"))
         }
 
         composable(
