@@ -20,13 +20,8 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-//noinspection UsingMaterialAndMaterial3Libraries
-import androidx.compose.material.BottomNavigation
-//noinspection UsingMaterialAndMaterial3Libraries
-import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -50,17 +45,12 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.giftshopsunmulapp.R
 import com.example.giftshopsunmulapp.ViewModels.BasketPageVM
-import com.example.giftshopsunmulapp.ViewModels.MainViewModel
 import com.example.giftshopsunmulapp.model.products
-import com.example.giftshopsunmulapp.model.shopCart
 import com.example.giftshopsunmulapp.ui.theme.blue
 import com.example.giftshopsunmulapp.ui.theme.lightBlue
 import com.example.giftshopsunmulapp.ui.theme.lightGreen
 import com.example.giftshopsunmulapp.ui.theme.white
-import kotlinx.coroutines.launch
 
-
-//@Preview
 @Composable
 fun BasketPage(navHost: NavHostController, viewModel: BasketPageVM)
 {

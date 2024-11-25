@@ -378,17 +378,17 @@ fun BtNavnBarC(navHost: NavHostController)
             BottomNavigationItem(
                 icon = { Icon(painterResource(R.drawable.shopping_bag), contentDescription = null,tint = lightBlue) },
                 selected = false,
-                onClick = {  /**/ }
+                onClick = {  navHost.navigate("OrdersPage") }
             )
             BottomNavigationItem(
                 icon = { Icon(painterResource(R.drawable.shopping_basket), contentDescription = null,tint = lightBlue) },
                 selected = false,
-                onClick = {  /**/  }
+                onClick = {  navHost.navigate("BasketPage")  }
             )
             BottomNavigationItem(
                 icon = { Icon(painterResource(R.drawable.user), contentDescription = null,tint = lightBlue) },
                 selected = false,
-                onClick = {  /**/  }
+                onClick = {  navHost.navigate("UserPage")  }
             )
         }
     }

@@ -137,7 +137,7 @@ fun MainPageContentOP(navHost: NavHostController, orders: List<orders>, viewMode
                         IconButton(onClick = {  })
                         {
                             Icon(
-                                painter = painterResource(id = R.drawable.arrow_down_wide_narrow),
+                                painter = painterResource(id =  R.drawable.arrow_down_wide_narrow),
                                 contentDescription = "",
                                 modifier = Modifier.size(25.dp),
                                 tint = blue,
@@ -158,9 +158,25 @@ fun MainPageContentOP(navHost: NavHostController, orders: List<orders>, viewMode
         }
         Spacer(modifier = Modifier.height(20.dp))
 
-        LazyColumn(verticalArrangement = Arrangement.spacedBy(15.dp),
-            modifier = Modifier.padding(bottom = 70.dp, start = 20.dp, end = 20.dp).background(white))
+        if(orders.isEmpty())
         {
+            Column(modifier = Modifier.align(Alignment.CenterHorizontally))
+            {
+                androidx.compose.material3.Text(
+                    text = "Заказов пока нет",
+                    fontSize = 25.sp,
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.W900,
+                    color = blue,
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
+        else
+        {
+            LazyColumn(verticalArrangement = Arrangement.spacedBy(15.dp),
+                modifier = Modifier.padding(bottom = 70.dp, start = 20.dp, end = 20.dp).background(white))
+            {
             items(orders){ ord ->
                 Column(modifier = Modifier.clip(RoundedCornerShape(15.dp)))
                 {
@@ -289,6 +305,7 @@ fun MainPageContentOP(navHost: NavHostController, orders: List<orders>, viewMode
                     }
                 }
             }
+        }
         }
     }
 }
