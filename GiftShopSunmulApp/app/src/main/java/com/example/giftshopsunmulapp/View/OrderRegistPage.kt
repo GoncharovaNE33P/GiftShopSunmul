@@ -34,7 +34,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -44,6 +46,7 @@ import com.example.giftshopsunmulapp.ui.theme.blue
 import com.example.giftshopsunmulapp.ui.theme.lightBlue
 import com.example.giftshopsunmulapp.ui.theme.lightGreen
 import com.example.giftshopsunmulapp.ui.theme.white
+import io.ktor.util.valuesOf
 
 
 @Composable
@@ -54,7 +57,9 @@ fun OrderRegistPage(navHost: NavHostController, viewModel: MainViewModel)
     if (!isDataLoaded)
     {
         Box(
-            modifier = Modifier.fillMaxSize().background(white),
+            modifier = Modifier
+                .fillMaxSize()
+                .background(white),
             contentAlignment = Alignment.Center
         ) {
             CircularProgressIndicator(color = blue)
@@ -74,6 +79,7 @@ fun OrderRegistPage(navHost: NavHostController, viewModel: MainViewModel)
     }
 }
 
+@Preview
 @Composable
 fun MainPageContentORP()
 {
@@ -84,7 +90,8 @@ fun MainPageContentORP()
     {
         Row(
             modifier = Modifier
-                .fillMaxWidth().height(90.dp)
+                .fillMaxWidth()
+                .height(90.dp)
                 .background(lightGreen),
             verticalAlignment = Alignment.CenterVertically
         )
@@ -127,7 +134,9 @@ fun MainPageContentORP()
         Spacer(modifier = Modifier.height(20.dp))
         Column(modifier = Modifier.padding(horizontal = 15.dp))
         {
-            Column(modifier = Modifier.background(white).clip(RoundedCornerShape(20.dp)))
+            Column(modifier = Modifier
+                .background(white)
+                .clip(RoundedCornerShape(20.dp)))
             {
                 Column(
                     modifier = Modifier
@@ -139,84 +148,217 @@ fun MainPageContentORP()
                     Text(
                         text = "Способ доставки",
                         style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.ExtraBold,
+                        fontWeight = FontWeight.W900,
                         fontSize = 18.sp,
                         color = blue
                     )
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    // Переключатель способов доставки
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(blue, RoundedCornerShape(25.dp)) // Синий фон с закруглениями
-                            .padding(4.dp), // Внутренние отступы
+                            .background(blue, RoundedCornerShape(20.dp))
+                            .padding(4.dp),
                         verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        // "Пункт выдачи" кнопка
+                    )
+                    {
                         Box(
                             modifier = Modifier
-                                .weight(1f) // Равная ширина
-                                .clip(RoundedCornerShape(25.dp))
-                                .background(if (selectedMethod == "Пункт выдачи") lightBlue else Color.Transparent) // Цвет фона при выборе
-                                .clickable { selectedMethod = "Пункт выдачи" } // Смена выбора
+                                .weight(1f)
+                                .clip(RoundedCornerShape(16.dp))
+                                .background(if (selectedMethod == "Пункт выдачи") lightBlue else Color.Transparent)
+                                .clickable { selectedMethod = "Пункт выдачи" }
                                 .padding(vertical = 8.dp),
                             contentAlignment = Alignment.Center
-                        ) {
+                        )
+                        {
                             Text(
                                 text = "Пункт выдачи",
                                 style = MaterialTheme.typography.bodyLarge,
-                                fontWeight = FontWeight.ExtraBold,
+                                fontWeight = FontWeight.W900,
                                 fontSize = 16.sp,
-                                color = if (selectedMethod == "Пункт выдачи") blue else Color.White // Цвет текста
+                                color = if (selectedMethod == "Пункт выдачи") blue else Color.White
                             )
                         }
 
                         Spacer(modifier = Modifier.width(4.dp))
 
-                        // "Курьер" кнопка
                         Box(
                             modifier = Modifier
-                                .weight(1f) // Равная ширина
-                                .clip(RoundedCornerShape(25.dp))
-                                .background(if (selectedMethod == "Курьер") lightBlue else Color.Transparent) // Цвет фона при выборе
-                                .clickable { selectedMethod = "Курьер" } // Смена выбора
+                                .weight(1f)
+                                .clip(RoundedCornerShape(16.dp))
+                                .background(if (selectedMethod == "Курьер") lightBlue else Color.Transparent)
+                                .clickable { selectedMethod = "Курьер" }
                                 .padding(vertical = 8.dp),
                             contentAlignment = Alignment.Center
-                        ) {
+                        )
+                        {
                             Text(
                                 text = "Курьер",
                                 style = MaterialTheme.typography.bodyLarge,
-                                fontWeight = FontWeight.ExtraBold,
+                                fontWeight = FontWeight.W900,
                                 fontSize = 16.sp,
-                                color = if (selectedMethod == "Курьер") blue else Color.White // Цвет текста
+                                color = if (selectedMethod == "Курьер") blue else Color.White
                             )
                         }
                     }
 
                     Spacer(modifier = Modifier.height(12.dp))
-
-                    // Информация о доставке
-                    AnimatedContent(targetState = selectedMethod, label = "")
-                    { method ->
+                    Row(verticalAlignment = Alignment.CenterVertically)
+                    {
+                        IconButton(onClick = {  })
+                        {
+                            Icon(
+                                painter = painterResource(id = R.drawable.map_pin),
+                                contentDescription = "", tint = blue,
+                                modifier = Modifier.size(30.dp)
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(5.dp))
+                        AnimatedContent(targetState = selectedMethod, label = "")
+                        { method ->
+                            Text(
+                                text = if (method == "Пункт выдачи")
+                                {
+                                    "На данный момент пункты выдачи отстутствуют в вашем регионе."
+                                }
+                                else
+                                {
+                                    "г. ..., ул. ..., д. ..., кв. ..., подъезд ..., этаж ..., домофон ..."
+                                },
+                                style = MaterialTheme.typography.bodyLarge,
+                                fontWeight = FontWeight.W900,
+                                fontSize = 16.sp,
+                                color = blue
+                            )
+                        }
+                    }
+                }
+            }
+        }
+        Spacer(modifier = Modifier.height(15.dp))
+        Column(modifier = Modifier.padding(horizontal = 15.dp))
+        {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(blue, RoundedCornerShape(20.dp))
+                    .padding(vertical = 10.dp, horizontal = 10.dp),
+                verticalAlignment = Alignment.CenterVertically
+            )
+            {
+                Box(
+                    modifier = Modifier
+                        .height(30.dp)
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(lightBlue)
+                        .padding(horizontal = 10.dp),
+                    contentAlignment = Alignment.Center
+                )
+                {
+                    Row(modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.Center),
+                        verticalAlignment = Alignment.CenterVertically)
+                    {
+                        Spacer(modifier = Modifier.width(10.dp))
+                        Icon(
+                            painter = painterResource(id = R.drawable.user_mini),
+                            contentDescription = "", tint = lightGreen,
+                            modifier = Modifier.size(15.dp)
+                        )
+                        Spacer(modifier = Modifier.width(5.dp))
                         Text(
-                            text = if (method == "Пункт выдачи")
-                            {
-                                "На данный момент пункты выдачи отстутствуют в вашем регионе."
-                            }
-                            else
-                            {
-                                "г. ..., ул. ..., д. ..., кв. ..., подъезд ..., этаж ..., домофон ..."
-                            },
+                            text = "Имя",
                             style = MaterialTheme.typography.bodyLarge,
-                            fontSize = 16.sp,
-                            color = blue // Синий текст
+                            fontWeight = FontWeight.W900,
+                            fontSize = 10.sp,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.width(100.dp),
+                            color = if (selectedMethod == "Курьер") blue else white
+                        )
+                        Spacer(modifier = Modifier.width(65.dp))
+                        Text(
+                            text = "Телефон",
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontWeight = FontWeight.W900,
+                            fontSize = 10.sp,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.width(100.dp),
+                            color = if (selectedMethod == "Курьер") blue else white
                         )
                     }
                 }
             }
         }
+        Spacer(modifier = Modifier.height(15.dp))
+
+        var selectedOption by remember { mutableStateOf("card") }
+        val options = listOf(
+            "cash" to "Наличный расчёт",
+            "card" to "Банковская карта",
+            "sbp" to "СБП - недоступен в вашем регионе"
+        )
+        Column(modifier = Modifier.padding(16.dp))
+        {
+            options.forEach{
+                    (value,label) ->
+                CostomRadioButton(
+                    isSelected = selectedOption == value,
+                    label = label,
+                    enabled = value != "sbp",
+                    onClick = { selectedOption = value}
+                )
+            }
+        }
+
+        /*Column(modifier = Modifier.padding(horizontal = 15.dp))
+        {
+            Column(modifier = Modifier
+                .background(white)
+                .clip(RoundedCornerShape(20.dp)))
+            {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(lightGreen)
+                        .padding(16.dp)
+                )
+                {
+                    Text(
+                        text = "Способ оплаты",
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.W900,
+                        fontSize = 18.sp,
+                        color = blue
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+
+                }
+            }
+        }*/
+    }
+}
+
+@Composable
+fun CostomRadioButton(isSelected: Boolean, label: String, enabled: Boolean = true, onClick: () -> Unit)
+{
+    Row(modifier = Modifier
+        .fillMaxWidth()
+        .clickable(enabled = enabled) { onClick() }
+        .padding(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    )
+    {
+        Icon(
+            painter = painterResource(id = if (isSelected) R.drawable.selected
+            else R.drawable.not_selected), contentDescription = "",
+            tint = if (enabled) lightBlue else if (isSelected || !isSelected) blue else white
+        )
     }
 }
 
