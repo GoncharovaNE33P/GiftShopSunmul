@@ -5,7 +5,9 @@ import android.content.SharedPreferences
 import android.util.Log
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.BottomNavigation
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
@@ -30,6 +32,7 @@ import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.storage.storage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 open class MainViewModel:ViewModel()
@@ -247,7 +250,7 @@ open class MainViewModel:ViewModel()
     }
 
     val _isDataLoaded = MutableStateFlow(false)
-    val isDataLoaded: StateFlow<Boolean> = _isDataLoaded
+    val isDataLoaded: StateFlow<Boolean> = _isDataLoaded.asStateFlow()
 
     val _listCategories = MutableStateFlow<List<categories>>(emptyList())
     var ListCategories: StateFlow<List<categories>> = _listCategories

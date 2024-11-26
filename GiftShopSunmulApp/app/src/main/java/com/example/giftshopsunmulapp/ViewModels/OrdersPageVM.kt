@@ -50,8 +50,7 @@ class OrdersPageVM: MainViewModel()
         val date = LocalDate.parse(inputDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"))
 
         val dayMonth = date.format(DateTimeFormatter.ofPattern("dd.MM"))
-        val monthName = date.format(DateTimeFormatter.ofPattern("LLLL", Locale("ru"))).capitalize(
-            Locale.ROOT)
+        val monthName = date.format(DateTimeFormatter.ofPattern("LLLL", Locale("ru"))).lowercase(Locale("ru"))
 
         return "$dayMonth $monthName"
     }

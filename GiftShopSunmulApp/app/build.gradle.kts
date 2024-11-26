@@ -70,6 +70,8 @@ dependencies {
     implementation("org.slf4j:slf4j-simple:2.0.9")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
 
+    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

@@ -1,22 +1,20 @@
 package com.example.giftshopsunmulapp.ViewModels
 
-import android.annotation.SuppressLint
-import android.widget.Toast
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.giftshopsunmulapp.domain.utlis.Constants
+import com.example.giftshopsunmulapp.model.ResultStateSignIn.ResultStateSignIn
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.builtin.Email
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.withContext
 
 class AvtorizationVM: ViewModel(){
+
+    val _signInState = MutableStateFlow<ResultStateSignIn>(ResultStateSignIn.Loading)
+    val signInState: StateFlow<ResultStateSignIn> = _signInState.asStateFlow()
 
     suspend fun Auth(emailUser: String, passwordUser: String): Boolean
     {
@@ -33,6 +31,7 @@ class AvtorizationVM: ViewModel(){
             }
             println(user.toString())
             println(Constants.supabase.auth.currentUserOrNull()!!.id)
+            _signInState.value = ResultStateSignIn.Success(user)
             println("Успешно!")
             true
         }
@@ -40,6 +39,7 @@ class AvtorizationVM: ViewModel(){
         {
             println("Ошибка!")
             println(e.message.toString())
+            _signInState.value = ResultStateSignIn.Error(e.message ?: "Unknown error")
             false
         }
 

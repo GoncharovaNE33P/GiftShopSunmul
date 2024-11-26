@@ -167,7 +167,9 @@ fun Avtorization(navHost: NavHostController, viewModel: AvtorizationVM = viewMod
                     flag.value = result
                     if (flag.value)
                     {
-                       navHost.navigate("ProdPage")
+                       //navHost.navigate("ProdPage")
+                       navHost.navigate("HistoryPage")
+                       //navHost.navigate("OrderRegistPage")
                     }
                     else
                     {

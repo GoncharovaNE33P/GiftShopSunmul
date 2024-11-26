@@ -255,7 +255,7 @@ fun MainPageContentPCP(navHost: NavHostController, prodId:String?,listProd:List<
                         )
                         {
                             Button(
-                                onClick = { },
+                                onClick = { navHost.navigate("OrderRegistPage") },
                                 modifier = Modifier.fillMaxWidth().height(30.dp),
                                 shape = RoundedCornerShape(5.dp),
                                 colors = ButtonDefaults.buttonColors(

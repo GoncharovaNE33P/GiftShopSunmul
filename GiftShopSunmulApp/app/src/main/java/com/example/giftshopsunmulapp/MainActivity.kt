@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import com.example.giftshopsunmulapp.View.MainPage
 import com.example.giftshopsunmulapp.ViewModels.MainViewModel
 import com.example.giftshopsunmulapp.navigation.Navigation
 import com.example.giftshopsunmulapp.ui.theme.GiftShopSunmulAppTheme

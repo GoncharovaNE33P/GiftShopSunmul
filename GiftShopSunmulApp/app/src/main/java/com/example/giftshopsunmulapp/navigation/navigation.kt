@@ -48,7 +48,7 @@ fun Navigation(viewModel: MainViewModel, context: Context)
 
     val navController = rememberNavController()
     NavHost(navController = navController,
-        startDestination = "Avtorization")
+        startDestination = "MainPage")
     {
         composable("MainPage")
         { MainPage(navController)}
