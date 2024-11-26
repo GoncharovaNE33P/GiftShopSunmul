@@ -22,10 +22,8 @@ import java.util.Locale
  */
 class ExampleUnitTest {
     private lateinit var viewModel: OrdersPageVM
-    /*private lateinit var viewModel1: OrdersPageVM*/
     private lateinit var constants: Constants
-    @Before
-    fun setUp()
+    @Before fun setUp()
     {
         Dispatchers.setMain(StandardTestDispatcher())
         viewModel = OrdersPageVM()
@@ -34,68 +32,52 @@ class ExampleUnitTest {
     * Тест на правильность установки начального состояния singInState
     * */
 
-    @Test
-    fun InitialSignInStateIsLoading()
+    @Test fun InitialSignInStateIsLoading()
     {
         val viewModel = AvtorizationVM()
         assertEquals(viewModel.signInState.value, ResultStateSignIn.Loading)
     }
-
     /*
-    * Тест на правильность установки состояния Success при успешном входе в систему
-    * */
+   * Тест на правильность установки состояния Success при успешном входе в систему
+   * */
 
-    @Test
-    fun signInStateIsSuccessAfterSuccessfulSignIn()
+    @Test fun signInStateIsSuccessAfterSuccessfulSignIn()
     {
         val viewModel = AvtorizationVM()
-
-        // Устанавливаем пользовательский макет
         viewModel._signInState.value = ResultStateSignIn.Success(Unit)
-
-        // Проверяем, что состояние signInState было правильно установлено
         assertEquals(viewModel.signInState.value, ResultStateSignIn.Success(Unit))
     }
-
     /*
     * Тест на проверку правильности установки состояния Error после неудачной попытки входа в систему
     * */
 
-    @Test
-    fun signInStateIsErrorAfterFailedSignIn()
+    @Test fun signInStateIsErrorAfterFailedSignIn()
     {
         val viewModel = AvtorizationVM()
         val mockError = Exception("Failed to sign in")
-
-        // Устанавливаем пользовательский макет
         viewModel._signInState.value = ResultStateSignIn.Error(mockError.message.toString())
-
-        // Проверяем, что состояние signInState было правильно установлено
         assertEquals(viewModel.signInState.value, ResultStateSignIn.Error(mockError.message.toString()))
     }
-
     /*
-    * Тест на проверку корректности окончания числа товаров
-    * */
+   * Тест на проверку корректности окончания числа товаров
+   * */
 
-    @Test
-    fun getProdCountReturnsCorrectTextFor5OrMoreProd()
+    @Test fun getProdCountReturnsCorrectTextFor5OrMoreProd()
     {
         val viewModel = OrdersPageVM()
         val  result = viewModel.getProdCount(5)
         assertEquals("5 товаров",result)
     }
-
     /*
-    * Тест на проверку правильности преобразования даты в нужный формат
-    * */
+   * Тест на проверку правильности преобразования даты в нужный формат
+   * */
 
-    @Test
-    fun formateDateReturnsCorrectly()
+    @Test fun formateDateReturnsCorrectly()
     {
         val inputDate = "2024-11-25"
         val result = viewModel.formatDate(inputDate)
-        val expectedDate = LocalDate.parse(inputDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")).format(DateTimeFormatter.ofPattern("dd.MM LLLL",
+        val expectedDate = LocalDate.parse(inputDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")).
+        format(DateTimeFormatter.ofPattern("dd.MM LLLL",
             Locale("ru"))).lowercase(Locale("ru"))
     }
 }
