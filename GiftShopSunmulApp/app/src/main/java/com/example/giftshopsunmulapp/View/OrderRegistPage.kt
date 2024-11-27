@@ -62,7 +62,7 @@ import java.text.DecimalFormat
 
 
 @Composable
-fun OrderRegistPage(navHost: NavHostController, viewModel: OrderRegistPageVM)
+fun OrderRegistPage(navHost: NavHostController, viewModel: OrderRegistPageVM, ProdId:String?)
 {
     val orders by viewModel.ListOrders.collectAsState()
     val payList by viewModel.ListPay_Methods.collectAsState()
@@ -85,7 +85,7 @@ fun OrderRegistPage(navHost: NavHostController, viewModel: OrderRegistPageVM)
     {
         Box()
         {
-            MainPageContentORP(navHost,orders,payList,delivList,user,viewModel)
+            MainPageContentORP(navHost,orders,payList,delivList,user,viewModel,ProdId)
         }
     }
     Box()
@@ -97,7 +97,7 @@ fun OrderRegistPage(navHost: NavHostController, viewModel: OrderRegistPageVM)
 
 @Composable
 fun MainPageContentORP(navHost: NavHostController, orders: List<orders>, payList: List<paymentMethods>,
-                       delivList: List<deliveryMethods>,userList: List<user>,viewModel: OrderRegistPageVM)
+                       delivList: List<deliveryMethods>,userList: List<user>,viewModel: OrderRegistPageVM, ProdId:String?)
 {
     Column(modifier = Modifier
         .fillMaxSize()
@@ -123,7 +123,7 @@ fun MainPageContentORP(navHost: NavHostController, orders: List<orders>, payList
                         .size(30.dp)
                 )
                 {
-                    IconButton(onClick = {  })
+                    IconButton(onClick = { navHost.navigate("ProdCardPage/${ProdId}") })
                     {
                         Icon(
                             painter = painterResource(id = R.drawable.backprodpage),
@@ -433,7 +433,7 @@ fun MainPageContentORP(navHost: NavHostController, orders: List<orders>, payList
                         )
                     }
                     Button(
-                        onClick = {},
+                        onClick = { navHost.navigate("OrdersPage") },
                         modifier = Modifier.fillMaxWidth().height(60.dp),
                         shape = RoundedCornerShape(10.dp),
                         colors = ButtonDefaults.buttonColors(

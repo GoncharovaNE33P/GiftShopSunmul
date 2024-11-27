@@ -57,7 +57,7 @@ import com.example.giftshopsunmulapp.ui.theme.lightGreen
 import com.example.giftshopsunmulapp.ui.theme.white
 
 @Composable
-fun ProdCardPage(navHost: NavHostController, viewModel: MainViewModel, prodId:String?)
+fun ProdCardPage(navHost: NavHostController, viewModel: MainViewModel, ProdId:String?)
 {
     val listProd by viewModel.ListProd.collectAsState()
     val isDataLoaded by viewModel.isDataLoaded.collectAsState()
@@ -75,7 +75,7 @@ fun ProdCardPage(navHost: NavHostController, viewModel: MainViewModel, prodId:St
     {
         Box()
         {
-            MainPageContentPCP(navHost,prodId,listProd)
+            MainPageContentPCP(navHost,ProdId,listProd)
         }
     }
     Box()
@@ -86,9 +86,9 @@ fun ProdCardPage(navHost: NavHostController, viewModel: MainViewModel, prodId:St
 }
 
 @Composable
-fun MainPageContentPCP(navHost: NavHostController, prodId:String?,listProd:List<products>)
+fun MainPageContentPCP(navHost: NavHostController, ProdId:String?,listProd:List<products>)
 {
-    val prod = listProd.find { it.id == prodId }!!
+    val prod = listProd.find { it.id == ProdId }!!
 
     Column(modifier = Modifier
         .background(color = white)
@@ -255,7 +255,7 @@ fun MainPageContentPCP(navHost: NavHostController, prodId:String?,listProd:List<
                         )
                         {
                             Button(
-                                onClick = { navHost.navigate("OrderRegistPage") },
+                                onClick = { navHost.navigate("OrderRegistPage/${prod.id}") },
                                 modifier = Modifier.fillMaxWidth().height(30.dp),
                                 shape = RoundedCornerShape(5.dp),
                                 colors = ButtonDefaults.buttonColors(
@@ -343,7 +343,7 @@ fun BtNavnBarC(navHost: NavHostController)
     Column()
     {
         Button(
-            onClick = {},
+            onClick = { navHost.navigate("BasketPage") },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp),
@@ -388,7 +388,7 @@ fun BtNavnBarC(navHost: NavHostController)
             BottomNavigationItem(
                 icon = { Icon(painterResource(R.drawable.user), contentDescription = null,tint = lightBlue) },
                 selected = false,
-                onClick = {  navHost.navigate("UserPage")  }
+                onClick = {  navHost.navigate("HistoryPage")  }
             )
         }
     }

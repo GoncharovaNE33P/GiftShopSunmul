@@ -98,7 +98,7 @@ open class MainViewModel:ViewModel()
             BottomNavigationItem(
                 icon = { Icon(painterResource(R.drawable.user), contentDescription = null,tint = lightBlue) },
                 selected = false,
-                onClick = {  navHost.navigate("UserPage")  }
+                onClick = {  navHost.navigate("HistoryPage")  }
             )
         }
     }
@@ -136,7 +136,7 @@ open class MainViewModel:ViewModel()
             BottomNavigationItem(
                 icon = { Icon(painterResource(R.drawable.user), contentDescription = null,tint = lightBlue) },
                 selected = false,
-                onClick = {  navHost.navigate("UserPage")  }
+                onClick = {  navHost.navigate("HistoryPage")  }
             )
         }
     }
@@ -172,7 +172,7 @@ open class MainViewModel:ViewModel()
             BottomNavigationItem(
                 icon = { Icon(painterResource(R.drawable.user), contentDescription = null,tint = lightBlue) },
                 selected = false,
-                onClick = {  navHost.navigate("UserPage")  }
+                onClick = {  navHost.navigate("HistoryPage")  }
             )
         }
     }
@@ -208,7 +208,7 @@ open class MainViewModel:ViewModel()
             BottomNavigationItem(
                 icon = { Icon(painterResource(R.drawable.user), contentDescription = null,tint = lightBlue) },
                 selected = false,
-                onClick = {  navHost.navigate("UserPage")  }
+                onClick = {  navHost.navigate("HistoryPage")  }
             )
         }
     }
@@ -244,7 +244,7 @@ open class MainViewModel:ViewModel()
             BottomNavigationItem(
                 icon = { Icon(painterResource(R.drawable.user_main), contentDescription = null,tint = lightGreen) },
                 selected = true,
-                onClick = {  navHost.navigate("UserPage")  }
+                onClick = {  navHost.navigate("HistoryPage")  }
             )
         }
     }

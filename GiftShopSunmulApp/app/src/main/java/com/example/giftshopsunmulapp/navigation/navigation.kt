@@ -36,15 +36,6 @@ import com.example.giftshopsunmulapp.ViewModels.SearchPageVM
 @Composable
 fun Navigation(viewModel: MainViewModel, context: Context)
 {
-   /* var sharedPreferences = viewModel.sharedPreferences
-    sharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-    val userEmail = viewModel.sharedPreferences!!.getString("user_email", null)
-
-
-    if (userEmail != null) {
-        startPage = "ProdPage"
-    } else {
-        startPage = "Avtorization"*/
 
     val navController = rememberNavController()
     NavHost(navController = navController,
@@ -68,8 +59,16 @@ fun Navigation(viewModel: MainViewModel, context: Context)
         composable("OrdersPage")
         { OrdersPage(navController, OrdersPageVM())}
 
-        composable("OrderRegistPage")
-        { OrderRegistPage(navController, OrderRegistPageVM())}
+        composable(
+            "OrderRegistPage/{ProdId}",
+            arguments = listOf(
+                navArgument(name = "ProdId"){
+                    type = NavType.StringType
+                }
+            )
+        ){backStackEntry ->
+            OrderRegistPage(navController, OrderRegistPageVM(), backStackEntry.arguments?.getString("ProdId"))
+        }
 
         composable("BasketPage")
         { BasketPage(navController, BasketPageVM())}
@@ -81,14 +80,14 @@ fun Navigation(viewModel: MainViewModel, context: Context)
         { HistoryPage(navController, HistoryPageVM()) }
 
         composable(
-            "ProdCardPage/{prod.id}",
+            "ProdCardPage/{ProdId}",
             arguments = listOf(
-                navArgument(name = "prod.id"){
+                navArgument(name = "ProdId"){
                     type = NavType.StringType
                 }
             )
         ){backStackEntry ->
-            ProdCardPage(navController, MainViewModel(), backStackEntry.arguments?.getString("prod.id"))
+            ProdCardPage(navController, MainViewModel(), backStackEntry.arguments?.getString("ProdId"))
         }
         composable(
             "ReviewPage/{prod.id}",
