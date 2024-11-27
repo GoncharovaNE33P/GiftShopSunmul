@@ -235,7 +235,7 @@ fun FormattedDate(dateString: String)
     val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     val outputFormat = SimpleDateFormat("LLLL dd.MM.yyyy", Locale("ru"))
     val date: Date = inputFormat.parse(dateString) ?: Date()
-    val formattedDate = outputFormat.format(date).capitalize()
+    val formattedDate = outputFormat.format(date).capitalize(Locale.ROOT)
 
     Text(text = formattedDate)
 }

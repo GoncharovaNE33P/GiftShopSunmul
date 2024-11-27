@@ -17,14 +17,17 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.example.giftshopsunmulapp.View.MainPage
 import com.example.giftshopsunmulapp.ViewModels.MainViewModel
+import com.example.giftshopsunmulapp.domain.utlis.NetworkMonitor
 import com.example.giftshopsunmulapp.navigation.Navigation
 import com.example.giftshopsunmulapp.ui.theme.GiftShopSunmulAppTheme
 
 class MainActivity : ComponentActivity() {
     private val viewModel by viewModels<MainViewModel>()
+    private lateinit var networkMonitor: NetworkMonitor
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        networkMonitor = NetworkMonitor(this)
         enableEdgeToEdge()
         hideSystemUI()
         setContent {
@@ -34,10 +37,14 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     MainViewModel.PrefsHelper.init(this)
-                    Navigation(viewModel, LocalContext.current)
+                    Navigation(viewModel, LocalContext.current,networkMonitor)
                 }
             }
         }
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        networkMonitor.unregisterCallback()
     }
 }
 

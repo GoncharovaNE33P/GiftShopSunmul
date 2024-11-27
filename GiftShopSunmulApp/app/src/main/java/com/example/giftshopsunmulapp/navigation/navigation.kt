@@ -2,6 +2,7 @@ package com.example.giftshopsunmulapp.navigation
 
 import android.content.Context
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHost
 import androidx.navigation.Navigation
@@ -32,17 +33,17 @@ import com.example.giftshopsunmulapp.ViewModels.OrdersPageVM
 import com.example.giftshopsunmulapp.ViewModels.RegistrationVM
 import com.example.giftshopsunmulapp.ViewModels.ReviewPageVM
 import com.example.giftshopsunmulapp.ViewModels.SearchPageVM
+import com.example.giftshopsunmulapp.domain.utlis.NetworkMonitor
 
 @Composable
-fun Navigation(viewModel: MainViewModel, context: Context)
+fun Navigation(viewModel: MainViewModel, context: Context,networkMonitor:NetworkMonitor)
 {
-
     val navController = rememberNavController()
     NavHost(navController = navController,
         startDestination = "MainPage")
     {
         composable("MainPage")
-        { MainPage(navController)}
+        { MainPage(navController,networkMonitor)}
 
         composable("Avtorization")
         { Avtorization(navController, AvtorizationVM())}
